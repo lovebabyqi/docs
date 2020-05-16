@@ -462,11 +462,274 @@ foo();
 ```
 
 - 1.当箭头函数只有一个形参，则()可以去掉。
-- 2.当箭头函数的代码块只有一句return时，则{}可以省略。
+- 2.当箭头函数的代码块只有一句return时，则{}可以省略，当需要return对象时，加上（）。
 - 3.箭头函数的this指向了箭头函数所在的环境。
 - 4.箭头函数内部没有arguments。
 
-## 5. iterator
+## 5. `generator` 函数
+
+在Javascript中，一个函数一旦开始执行，就会运行到最后或遇到return时结束，运行期间不会有其它代码能够打断它，也不能从外部再传入值到函数体内
+
+而Generator函数（生成器）的出现使得打破函数的完整运行成为了可能，其语法行为与传统函数完全不同
+
+Generator函数是ES6提供的一种异步编程解决方案，形式上也是一个普通函数，但有几个显著的特征：
+
+
+
+- function关键字与函数名之间有一个星号 " * " （推荐紧挨着function关键字）。
+- 函数体内使用 yield 表达式，定义不同的内部状态 （可以有多个yield）。
+- 直接调用 Generator函数并不会执行，也不会返回运行结果，而是返回一个遍历器对象（Iterator Object）。
+- 依次调用遍历器对象的next方法，遍历 Generator函数内部的每一个状态
+
+
+
+语法：
+
+```javascript
+function* gen() { 
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+let g = gen(); 
+console.log(g);
+// "Generator { }"
+```
+
+<img src='/docs/js/generator函数01.png' alt='generator函数01.png'>
+
+```javascript
+function* gen() {
+    yield 'hello'
+    yield 'world'
+    return 'ending'
+}
+let g = gen();
+
+g.next();// {value: "hello", done: false}
+g.next();// {value: "world", done: false}
+g.next();// {value: "ending", done: true}
+g.next();// {value: undefined, done: true}
+```
+
+上面代码中定义了一个 Generator函数，其中包含两个 yield 表达式和一个 return 语句（即产生了三个状态）。
+
+每次调用Iterator对象的next方法时，内部的指针就会从函数的头部或上一次停下来的地方开始执行，直到遇到下一个 yield 表达式或return语句暂停。换句话说，Generator 函数是分段执行的，yield表达式是暂停执行的标记，而 next方法可以恢复执行。
+
+执行过程如下：
+
+1. 第一次调用next方法时，内部指针从函数头部开始执行，遇到第一个 yield 表达式暂停，并返回当前状态的值 'hello'。
+2. 第二次调用next方法时，内部指针从上一个（即第一个） yield 表达式开始，遇到第二个 yield 表达式暂停，返回当前状态的值 'world'。
+3. 第三次调用next方法时，内部指针从第二个 yield 表达式开始，遇到return语句暂停，返回当前状态的值 'ending'，同时所有状态遍历完毕，done 属性的值变为true。
+4. 第四次调用next方法时，由于函数已经遍历运行完毕，不再有其它状态，因此返回 {value: undefined, done: true}。如果继续调用next方法，返回的也都是这个值。
+
+### 5.1 `yield` 表达式
+
+#### 5.1.1 `yield` 表达式只能用在 Generator 函数里面，用在其它地方都会报错
+
+```javascript
+(function (){
+    yield 1;
+})()
+
+// SyntaxError: Unexpected number
+// 在一个普通函数中使用yield表达式，结果产生一个句法错误
+```
+
+#### 5.1.2` yield` 表达式如果用在另一个表达式中，必须放在圆括号里面
+
+```javascript
+function* demo() {
+    console.log('Hello' + yield); // SyntaxError
+    console.log('Hello' + yield 123); // SyntaxError
+
+    console.log('Hello' + (yield)); // OK
+    console.log('Hello' + (yield 123)); // OK
+}
+```
+
+#### 5.1.3 `yield` 表达式用作参数或放在赋值表达式的右边，可以不加括号
+
+```javascript
+function* demo() {
+    foo(yield 'a', yield 'b'); // OK
+    let input = yield; // OK
+}
+```
+
+#### 5.1.4 `yield` 表达式和return语句的区别
+
+   相似：都能返回紧跟在语句后面的那个表达式的值
+
+   区别：
+
+​     --  每次遇到 yield，函数就暂停执行，下一次再从该位置继续向后执行；而 return 语句不具备记忆位置的功能
+
+​     --  一个函数只能执行一次 return 语句，而在 Generator 函数中可以有任意多个 yield
+
+### 5.2 `yield*` 表达式
+
+如果在 Generator 函数里面调用另一个 Generator 函数，默认情况下是没有效果的
+
+```javascript
+{
+  function* foo() {
+    yield 'aaa'
+    yield 'bbb'
+  }
+
+  function* bar() {
+    foo()
+    yield 'ccc'
+    yield 'ddd'
+  }
+
+  let iterator = bar()
+
+  for(let value of iterator) {
+    console.log(value)
+  }
+
+  // ccc
+  // ddd
+
+} 
+```
+
+上例中，使用 for...of 来遍历函数bar的生成的遍历器对象时，只返回了bar自身的两个状态值。此时，如果想要正确的在bar 里调用foo，就需要用到 yield* 表达式
+
+`yield*` 表达式用来在一个 Generator 函数里面 **执行** 另一个 Generator 函数
+
+```javascript
+function* foo() {
+    yield 'aaa';
+    yield 'bbb';
+}
+
+function* bar() {
+    yield* foo();// 在bar函数中 **执行** foo函数
+    yield 'ccc';
+    yield 'ddd';
+}
+
+let iterator = bar()
+for(let value of iterator) {
+    console.log(value);
+}
+// aaa
+// bbb
+// ccc
+// ddd
+```
+
+### 5.3 `generator`函数方法：
+
+- `Generator.prototype.next()`
+
+`next()` 方法返回一个包含属性 `done` 和 `value` 的对象。该方法也可以通过接受一个参数用以向生成器传值。 
+
+```javascript
+g.next(value);//value 向生成器传递的值
+```
+
+```javascript
+function* gen() {
+  while(true) {
+    var value = yield null;
+    console.log(value);
+  }
+}
+
+let g = gen();
+g.next(1); 
+// "{ value: null, done: false }"
+g.next(2); 
+// 2
+// "{ value: null, done: false }"
+```
+
+```javascript
+function* gen() {
+    let result = yield 3 + 5 + 6;
+    console.log(result);
+    yield result;
+}
+
+let g = gen();
+console.log(g.next());// {value: 14, done: false}
+console.log(g.next(3));// 3    {value: 3, done: false}
+```
+
+
+
+- `Generator.prototype.return()`
+
+`return()`方法返回给定的值并结束生成器。 
+
+```javascript
+g.return(value);//value 需要返回的值
+```
+
+```javascript
+function* gen() { 
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+var g = gen();
+
+g.next();        // { value: 1, done: false }
+g.return("foo"); // { value: "foo", done: true }
+g.next();        // { value: undefined, done: true }
+```
+
+如果对已经处于“完成”状态的生成器调用`return(value)`，则生成器将保持在“完成”状态。如果没有提供参数，则返回对象的`value`属性与示例最后的`.next()`方法相同。如果提供了参数，则参数将被设置为返回对象的`value`属性的值。 
+
+```javascript
+function* gen() {
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+var g = gen();
+g.next(); // { value: 1, done: false }
+g.next(); // { value: 2, done: false }
+g.next(); // { value: 3, done: false }
+g.next(); // { value: undefined, done: true }
+g.return(); // { value: undefined, done: true }
+g.return(1); // { value: 1, done: true }
+```
+
+
+
+- `Generator.prototype.throw()`：向生成器抛出一个错误。
+
+`throw()` 方法用来向生成器抛出异常，并恢复生成器的执行，返回带有 `done` 及 `value` 两个属性的对象。 
+
+```javascript
+gen.throw(exception);//exception 用于抛出的异常。 使用 Error 的实例对调试非常有帮助.
+```
+
+```javascript
+function* gen() {
+  while(true) {
+    try {
+       yield 42;
+    } catch(e) {
+      console.log("Error caught!");
+    }
+  }
+}
+
+var g = gen();
+g.next(); // { value: 42, done: false }
+g.throw(new Error("Something went wrong")); // "Error caught!"
+```
+
+## 6. iterator
 
 ```javascript
 for...of 循环可以遍历的数据  必须有Symbol.iterator属性
@@ -518,9 +781,9 @@ var iterator = arr['myInterator']();
 console.log(iterator.next());
 ```
 
-## 6. 新增symblo数据类型
+## 7. 新增symblo数据类型
 
-### 6.1 es6新增数据类型 symbol
+### 7.1 es6新增数据类型 symbol
 
 本质上只要是不同`symbol`数据，`===`比较时就是`false`，为了人为区分长度一样的`symbol`数据，所以可以人为给symbol设置标识。
 
@@ -529,7 +792,7 @@ var s1 = Symbol('name');
 var s2 = Symbol.for('province');
 ```
 
-### 6.2 使用Symbol()方法可以创建一个Symbol类型的值。
+### 7.2 使用Symbol()方法可以创建一个Symbol类型的值。
 
 ```javascript
 let s = Symbol();
@@ -540,7 +803,7 @@ console.log(one == two);//false
 
 即便是键值相同两个Symbol类型的值也是不相同的。
 
-### 6.3 使用Symbol.for()方法也可以创建一个Symbol类型的值
+### 7.3 使用Symbol.for()方法也可以创建一个Symbol类型的值
 
 但是此方法和Symbol()的一个重要**区别**是，**它不会重复创建具有相同键的值**，也就是说此方法在创建一个值之前，**首先会搜索是否已经具有指定键的Symbol类型的值，如果有则返回这个Symbol值，否则新创建一个Symbol值。**
 
@@ -572,9 +835,9 @@ console.log(one == two);//false
 
 Symbol.for()创建的值会被登记在全局环境中供搜索，而Symbol()创建的值不会，所以Symbol.for("蚂蚁部落")依然会新创建一个Symbol值，而不是返回Symbol("蚂蚁部落")创建的值。
 
-## 7. map数据结构
+## 8. map数据结构
 
-### 1. 创建map结构以及map中的方法
+### 8.1 创建map结构以及map中的方法
 
 方法:
 
@@ -615,14 +878,14 @@ console.log(m);
 ]);
 ```
 
-## 8. set数据结构
+## 9. set数据结构
 
-### 8.1 set数据结构特点
+### 9.1 set数据结构特点
 
 - 1.数据不能够重复。
 - 2.索引和数据是一致的。
 
-### 8.2 set的操作方法
+### 9.2 set的操作方法
 
 - `add(数据)`，向set结构中填充数据。
 - `delete(数据)`，删除set结构中的指定数据。
@@ -662,7 +925,7 @@ WeakSet(必须是数组)，而且数组中必须全部都是引用值。
 
 WeakSet这种数据格式没有`Symbol.iterator`，所有不能生成遍历器。
 
-## 9. async await
+## 10. async await
 
 `async`函数的返回结果是`promise`
 
@@ -699,7 +962,7 @@ console.log(1);
 //控制台输出:2,3,1.4.string,5
 ```
 
-### 2.try catch
+## 11. try catch
 
 JS报错的分类
 
@@ -713,15 +976,23 @@ JS报错的分类
 - 如果没有该变量直接判定为引用错误
 - 如果有该变量就判断是否为类型错误
 
+**try:  语句测试代码块的错误，一般把可能会出错的代码放到这里**。
+
+**catch： 只有try里面的代码块发生错误时，才会执行这里的代码，参数err记录着try里面代码的错误信息**。
+
+**finally: 无论有无异常里面代码都会执行**。
+
 ```javascript
 try{
     console.log(a)
-}catch(e){
-    console.log(e.name+'    '+e.message)
+}catch(err){
+    console.log(err.name+'    '+err.message)
+}finally{
+    //无论是否捕获到错误，都会执行
 }
 ```
 
-### 3.promise
+## 12. promise
 
 `promise`是为了解决**回调地狱**的
 `promise`就是一个机器
@@ -750,7 +1021,7 @@ let p = new Promise(function(resolve,reject){
 })
 ```
 
-**res执行then,rej执行catch**
+**res执行then，rej执行catch**
 
 ```javascript
 let p = new Promise(function(resolve,reject){
@@ -786,7 +1057,7 @@ new Promise(function(res,rej){
 })
 ```
 
-### 3.promise的方法
+### promise.all，promise.race
 
 ```javascript
 Promise.all([p1,p2,p3...])
@@ -831,9 +1102,9 @@ p.catch( (data)=>{
 } )
 ```
 
-## 10. class，extend
+## 13. class，extend
 
-### 10.1 class创建类
+### 13.1 class创建类
 
 使用class关键词可以定义一个类，类的数据类型是function，只要通过new启动了类，就会自动执行constructor这个函数。
 
@@ -858,7 +1129,7 @@ class Person{   //类  只能写函数
 var person = new Person('heaven',28)
 ```
 
-### 10.2 extends继承
+### 13.2 extends继承
 
 - 1.如果不在类中写constructor函数，系统会自动加上。
 - 2.必须在一个继承父类的子类的constructor函数写上super()，这时super是一个函数。
@@ -922,7 +1193,7 @@ class B extends A {     //子类
 let b = new B();
 ```
 
-## 11. ES6导入import导出export
+## 14. ES6导入import导出export
 
 ```javascript
 //a.js
@@ -932,7 +1203,8 @@ import * as obj from './b.js'
 
 //as 关键词的作用
 //可以把b.js文件中的变量名  重命名
-//接收默认导出的数据  是不需要{}
+//接收默认导出的数据  是不需要{}的
+//导入的数据是只读的，修改只能让自身模块修改
 ```
 
 ```javascript
@@ -944,7 +1216,7 @@ export let b3 = function(){}
 
 //这种方式一个export 可以导出多个数据
 export {            
-	变量1,变量2...
+	//变量1,变量2...
 }
 
 let b4 = [1,2]
