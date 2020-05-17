@@ -71,6 +71,10 @@
                         icon:'/docs/navIcons/bootcdn_logo.ico',
                         url:'https://www.bootcdn.cn/'
                     },{
+                        title:'github加速clone',
+                        icon:'/docs/navIcons/7.png',
+                        url:'https://github.zhlh6.cn/'
+                    },{
                         title:'mockjs',
                         icon:'/docs/navIcons/mock_logo.svg',
                         url:'http://mockjs.com/'

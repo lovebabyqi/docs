@@ -21,6 +21,7 @@ module.exports = {
             {text: 'Vue', link: '/Vue/'},
             {text: 'React', link: '/React/'},
             {text: 'node', link: '/node/'},
+            {text: 'wx', link: '/wx/'},
             {text: '网络', link: '/http/'},
             {text: '封装组件', link: '/myComponents/'},
             {text: '工具', link: '/utils/'},
@@ -59,6 +60,9 @@ module.exports = {
                 '',
             ],
             '/node/': [
+                '',
+            ],
+            '/wx/': [
                 '',
             ],
             '/http/': [

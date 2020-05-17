@@ -1,5 +1,5 @@
 # css相关
-## 1. 文字样式
+## 1. 字体样式
 
 ### **1.1 字体font**
 
@@ -433,6 +433,36 @@ background:red url('') no-repeat fixed center center/50%;
 
 ## 6. CSS3transform转换
 
+### transform-origin
+
+```css
+transform-origin: x-axis y-axis z-axis; 
+```
+
+```css
+x-axis	
+/**定义视图被置于 X 轴的何处。可能的值：**/
+    left
+    center
+    right
+    length
+    %
+
+y-axis	
+/**定义视图被置于 Y 轴的何处。可能的值：**/
+    top
+    center
+    bottom
+    length
+    %
+
+z-axis	
+/**定义视图被置于 Z 轴的何处。可能的值：**/
+	length
+```
+
+
+
 ### 6.1 2D转换
 
 **transform简写**
@@ -536,10 +566,10 @@ div:hover{
 简写属性，用于在一个属性中设置四个过渡属性。
 
 ```css
-transition-property	规定应用过渡的 CSS 属性的名称。
-transition-duration	定义过渡效果花费的时间。默认是 0。
-transition-timing-function 	规定过渡效果的时间曲线。默认是 "ease"。
-transition-delay 规定过渡效果何时开始。默认是 0。
+transition-property	/**规定应用过渡的 CSS 属性的名称。**/
+transition-duration	/**定义过渡效果花费的时间。默认是 0。**/
+transition-timing-function 	/**规定过渡效果的时间曲线。默认是 "ease"。**/
+transition-delay /**规定过渡效果何时开始。默认是 0。**/
 ```
 
 **示例:**
@@ -565,7 +595,7 @@ div{
 div:hover{
 	width:200px;
 }
-//-webkit-兼容前缀
+/**-webkit-兼容前缀**/
 ```
 
 **trasition简写**
@@ -617,19 +647,17 @@ div:hover{
 
 **animation-iteration-count**	
 
-规定动画被播放的次数。默认是 1。
-
-infinite 	指定动画应该播放无限次（永远）
+规定动画被播放的次数。默认是 1。`infinite` 	指定动画应该播放无限次。
 
 **animation-direction**	
 
 规定动画是否在下一周期逆向地播放。默认是 "normal"。
 
-```
-normal	默认值。动画按正常播放
-reverse	动画反向播放
-alternate	动画在奇数次（1、3、5...）正向播放，在偶数次（2、4、6...）反向播放
-alternate-reverse	动画在奇数次（1、3、5...）反向播放，在偶数次（2、4、6...）正向播放
+```css
+normal	/**默认值。动画按正常播放**/
+reverse	/**动画反向播放**/
+alternate	/**动画在奇数次（1、3、5...）正向播放，在偶数次（2、4、6...）反向播放**/
+alternate-reverse	/**动画在奇数次（1、3、5...）反向播放，在偶数次（2、4、6...）正向播放**/
 ```
 
 **animation-play-state**	
@@ -717,17 +745,17 @@ flex-flow: flex-direction flex-wrap|initial|inherit;
 父元素：设置flex-direction:决定主轴的方向（子元素/项目的排列方向）
 
 ```css
-row				主轴横向	从左至右
-row-reverse		 主轴横向	 从右至左
-column			主轴纵向	从上至下
-column-reverse	 主轴纵向	 从下至上
+row				/**主轴横向	从左至右**/
+row-reverse		 /**主轴横向	 从右至左**/
+column			/**主轴纵向	从上至下**/
+column-reverse	 /**主轴纵向	 从下至上**/
 ```
 
 #### **9.1.2 flex-wrap		元素换行方法**
 
 ```css
-nowrap	默认不换行
-wrap	换行，如果子元素的总宽度大于父元素，超出的子元素将到下一行显示，子元素宽度不会重置，如果子元素的总高度大于父元素，则元素会超出父元素边界
+nowrap	/**默认不换行**/
+wrap	/**换行，如果子元素的总宽度大于父元素，超出的子元素将到下一行显示，子元素宽度不会重置，如果子元素的总高度大于父元素，则元素会超出父元素边界**/
 ```
 
 ### 9.2flex定义flex-grow flex-shrink flex-basis复合属性
@@ -737,13 +765,13 @@ flex: flex-grow flex-shrink flex-basis|auto|initial|inherit;
 ```
 
 ```css
-flex-grow	//一个数字，规定项目将相对于其他灵活的项目进行扩展的量。
-flex-shrink	//一个数字，规定项目将相对于其他灵活的项目进行收缩的量。
-flex-basis	//项目的长度。合法值："auto"、"inherit" 或一个后跟 "%"、"px"、"em" 或任何其他长度单位的数字。
-auto	//与 1 1 auto 相同。
-none	//与 0 0 auto 相同。
-initial	//设置该属性为它的默认值，即为 0 1 auto。请参阅 initial。
-inherit	//从父元素继承该属性。请参阅 inherit。
+flex-grow	/**一个数字，规定项目将相对于其他灵活的项目进行扩展的量。**/
+flex-shrink	/**一个数字，规定项目将相对于其他灵活的项目进行收缩的量。**/
+flex-basis	/**项目的长度。合法值："auto"、"inherit" 或一个后跟 "%"、"px"、"em" 或任何其他长度单位的数字。**/
+auto	/**与 1 1 auto 相同。**/
+none	/**与 0 0 auto 相同。**/
+initial	/**设置该属性为它的默认值，即为 0 1 auto。请参阅 initial。**/
+inherit	/**从父元素继承该属性。请参阅 inherit。**/
 ```
 
 ### 9.3 对齐和排序属性
@@ -751,22 +779,22 @@ inherit	//从父元素继承该属性。请参阅 inherit。
 #### **9.3.1 justify-content子元素主轴方向排布方法**
 
 ```css
-flex-start	默认左对齐
-flex-end 	右对齐
-center		居中
-space-between	两端对齐	子元素之间间隔相等
-space-around	分散对齐	子元素距离两端的间隔相等
-space-evenly	元素均匀排列
+flex-start	/**默认左对齐**/
+flex-end 	/**右对齐**/
+center		/**居中**/
+space-between	/**两端对齐	子元素之间间隔相等**/
+space-around	/**分散对齐	子元素距离两端的间隔相等**/
+space-evenly	/**元素均匀排列**/
 ```
 
 ### **9.4 align-items交叉轴方向排布方法(需要设置高度)**
 
 ```css
-flex-start	交叉轴的起点对齐。
-flex-end	交叉轴的终点对齐。
-center		交叉轴的中点对齐。垂直居中
-baseline	子元素的第一行文字的基线对齐。
-stretch（默认值）如果子元素未设置高度或设为auto，将占满整个容器的高度。
+flex-start	/**交叉轴的起点对齐。**/
+flex-end	/**交叉轴的终点对齐。**/
+center		/**交叉轴的中点对齐。垂直居中**/
+baseline	/**子元素的第一行文字的基线对齐。**/
+stretch/**（默认值）如果子元素未设置高度或设为auto，将占满整个容器的高度。**/
 ```
 
 ### 9.5 align-content交叉轴方向排布(多轴线对齐)
@@ -774,14 +802,14 @@ stretch（默认值）如果子元素未设置高度或设为auto，将占满整
 如果弹性盒模型的子元素设置了换行样式,但是多行的子元素高度和小于父元素高度时，此时可以设置每一行的子元素位置的分布
 
 ```css
-1.strech		各行将会伸展以占用剩余的空间。如果剩余的空间是负数，
-该值等效于'flex-start'。在其它情况下，剩余空间被所有行平分，以扩大它们的侧轴尺寸。
-2.center	元素位于容器的中心。
-各行向弹性盒容器的中间位置堆叠。各行两两紧靠住同时在弹性盒容器中居中对齐
-3.flex-start	元素位于容器的开头
-4.space-between	各行在弹性容器中平均分布
-5.space-around	各行在弹性盒容器中平均分布，两端保留子元素与子元素之间间距大小的一半
-6.flex-end	元素位于容器的结尾
+1.strech		/**各行将会伸展以占用剩余的空间。如果剩余的空间是负数，**/
+/**该值等效于'flex-start'。在其它情况下，剩余空间被所有行平分，以扩大它们的侧轴尺寸。**/
+2.center	/**元素位于容器的中心。**/
+/**各行向弹性盒容器的中间位置堆叠。各行两两紧靠住同时在弹性盒容器中居中对齐**/
+3.flex-start	/**元素位于容器的开头**/
+4.space-between	/**各行在弹性容器中平均分布**/
+5.space-around	/**各行在弹性盒容器中平均分布，两端保留子元素与子元素之间间距大小的一半**/
+6.flex-end	/**元素位于容器的结尾**/
 ```
 
 ### 9.6 弹性盒子内的子元素的排布顺序
@@ -795,11 +823,11 @@ order属性：整数值
 **单独操作弹性盒子内某个子元素的排布**
 
 ```css
-flex-start	交叉轴的起点对齐。
-flex-end	交叉轴的终点对齐。
-center		交叉轴的中点对齐。垂直居中
-baseline	子元素的第一行文字的基线对齐。
-stretch（默认值）如果子元素未设置高度或设为auto，将占满整个容器的高度
+flex-start	/**交叉轴的起点对齐。**/
+flex-end	/**交叉轴的终点对齐。**/
+center		/**交叉轴的中点对齐。垂直居中**/
+baseline	/**子元素的第一行文字的基线对齐。**/
+stretch/**（默认值）如果子元素未设置高度或设为auto，将占满整个容器的高度**/
 ```
 ## 10. less语法
 
@@ -1277,5 +1305,88 @@ background-image: url("@{base-url}/images/bg.png");
 ```less
 @color: color(`window.colors.baseColor`);
 @darkcolor: darken(@color, 10%);
+```
+
+## 11. 背景background
+
+```css
+background: #00ff00 url('smiley.gif') no-repeat fixed center; 
+```
+
+```css
+background-color	/**背景色**/
+background-image	/**背景图**/
+background-repeat	/**平铺方式 repeat-x|repeat-y|repeat|no-repeat;**/
+background-attachment
+background-position
+background-origin
+background-size	
+background-clip
+```
+
+#### background-position
+
+设置背景图像的起始位置。
+
+```css
+left top	/**如果仅指定一个关键字，其他值将会是"center"**/
+left center
+left bottom
+right top
+right center
+right bottom
+center top
+center center
+center bottom	
+x% y%	/**第一个值是水平位置，第二个值是垂直。左上角是0％0％。右下角是100％100％。如果仅指定了一个值，其他值将是50％。 。默认值为：0％0％**/
+xpos ypos	/**第一个值是水平位置，第二个值是垂直。左上角是0。单位可以是像素（0px0px）或任何其他 CSS单位。如果仅指定了一个值，其他值将是50％。你可以混合使用％和positions**/
+inherit	/**指定background-position属性设置应该从父元素继承**/
+```
+
+#### background-attachment
+
+设置背景图像是否固定或者随着页面的其余部分滚动。 
+
+```css
+scroll	/**背景图片随着页面的滚动而滚动，这是默认的。**/
+fixed	/**背景图片不会随着页面的滚动而滚动。**/
+local	/**背景图片会随着元素内容的滚动而滚动。**/
+initial	/**设置该属性的默认值。 阅读关于 initial 内容**/
+inherit	/**指定 background-attachment 的设置应该从父元素继承。 阅读关于 inherit 内容**/
+```
+
+CSS3
+
+#### background-origin
+
+background-Origin属性指定background-position属性应该是相对位置。
+
+**注意**：如果背景图像background-attachment是"固定"，这个属性没有任何效果。
+
+```css
+padding-box	/**背景图像填充框的相对位置**/
+border-box	/**背景图像边界框的相对位置**/
+content-box	/**背景图像的相对位置的内容框**/
+```
+
+#### background-size	
+
+指定背景图像的大小：.
+
+```css
+length	/**设置背景图片高度和宽度。第一个值设置宽度，第二个值设置的高度。如果只给出一个值，第二个是设置为 auto(自动)**/
+percentage	/**将计算相对于背景定位区域的百分比。第一个值设置宽度，第二个值设置的高度。如果只给出一个值，第二个是设置为"auto(自动)"**/
+cover	/**此时会保持图像的纵横比并将图像缩放成将完全覆盖背景定位区域的最小大小。**/
+contain	/**此时会保持图像的纵横比并将图像缩放成将适合背景定位区域的最大大小。**/
+```
+
+#### background-clip
+
+指定绘图区的背景 
+
+```css
+border-box	/**默认值。背景绘制在边框方框内（剪切成边框方框）。**/
+padding-box	/**背景绘制在衬距方框内（剪切成衬距方框）。**/
+content-box	/**背景绘制在内容方框内（剪切成内容方框）。**/
 ```
 

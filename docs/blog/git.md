@@ -2,6 +2,22 @@
 
 ## 1. git基础操作
 
+任何时候不要忘记先配置用户名和邮箱，不然提交一团乱
+
+```ssh
+# 查看用户名
+git config user.name
+# 查看邮箱
+git config user.email
+
+# 配置用户名
+git config --global user.name "你的用户名"
+# 配置邮箱
+git config --global user.email "你的邮箱"
+```
+
+
+
 ### 1.1 添加提交操作
 
 在文件夹内右键git bush here开始操作,并创建一个index.html,
@@ -361,3 +377,65 @@ git tag v0.9 版本号
 #如果标签打错了，也可以删除
 git tag -d v1.0
 ```
+### 4.4 git提交后，首页不显示绿点记录
+
+多半是因为没有配置用户名和邮箱，默认提交用户名是`Your Name`，默认邮箱`you@example.com`
+
+**修改git配置作者和邮箱**
+
+只要github和本地的作者保持一致就可以了。
+
+1.修改github的配置，在settings-profile上修改name 和email
+
+2.修改local的git配置：
+
+```js
+git config --global user.name "Your Correct Name"
+git config --global user.email "your-correct-email@example.com"
+```
+
+**修改已提交记录的作者和邮箱**
+
+如果还需要修改已经提交的记录的作者和邮箱。需要以下步骤：
+
+#### 1. 创建临时clone到本地，进入目录
+
+```js
+git clone --bare https://github.com/user/repo.git
+cd repo.git
+```
+
+- OLD_EMAIL 旧的错误的邮箱，为设置的话可能是`you@example.com`
+- CORRECT_NAME="正确的用户名"
+- CORRECT_EMAIL="正确的，期望的邮箱"
+
+```js
+git filter-branch --env-filter '
+OLD_EMAIL="you@example.com"
+CORRECT_NAME="lovebabyqi"
+CORRECT_EMAIL="861982926@qq.com"
+if [ "$GIT_COMMITTER_EMAIL" = "$OLD_EMAIL" ]
+then
+    export GIT_COMMITTER_NAME="$CORRECT_NAME"
+    export GIT_COMMITTER_EMAIL="$CORRECT_EMAIL"
+fi
+if [ "$GIT_AUTHOR_EMAIL" = "$OLD_EMAIL" ]
+then
+    export GIT_AUTHOR_NAME="$CORRECT_NAME"
+    export GIT_AUTHOR_EMAIL="$CORRECT_EMAIL"
+fi
+' --tag-name-filter cat -- --branches --tags
+```
+
+#### 2. 检查新的git历史记录看是否有错误
+
+#### 3. 强制推送修改了的git记录到github
+
+```js
+git push --force --tags origin 'refs/heads/*'
+```
+
+清除临时克隆
+
+
+

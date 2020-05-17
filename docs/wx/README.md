@@ -1,0 +1,585 @@
+# 小程序
+
+[官方文档地址](https://developers.weixin.qq.com/miniprogram/dev/component/)
+
+## 1. 基础部分
+
+本篇文章旨在快速上手小程序，在有 Vue 作为前置知识的情况下，理解。
+
+### 1.1 rpx wxss
+
+- wxss小程序样式特性：
+
+**尺寸单位 `rpx` 核心点**。移动设备的分辨率与rpx：
+
+| 设备             | 屏幕尺寸 | 分辨率(px)   | reader  | 分辨率(pt)  | PPI(DPI) |
+| ---------------- | -------- | ------------ | ------- | ----------- | -------- |
+| iPhone 3GS       | 3.5      | 320*480      | @1x     | 320*480     | 163      |
+| iPhone 4/4s      | 3.5      | 640*960      | @2x     | 320*480     | 326      |
+| iPhone 5/5S/5C   | 4        | 640*1136     | @2x     | 320*568     | 326      |
+| **iPhone 6/6S**  | **4.7**  | **750*1334** | **@2x** | **375*667** | **326**  |
+| iPhone 6/6S Plus | 5.5      | 1242*2208    | @3x     | 414*736     | 401      |
+
+通常以 iphone6s 为基准
+
+<img src='/docs/wx/rpx.png' alt='rpx.png'>
+
+<img src='/docs/wx/PPI.png' alt='PPI.png'>
+
+假设设计稿就按照iphone6S的尺寸来模拟，UI工程师给我们的素材是750宽的，换算到小程序的px那就是375px即750rpx。
+
+以iphone 6s设备的尺寸作为基准值定义在 iPhone 6s的情况下 **一个物理分辨率=1rpx=0.5px** 然后在不同的分辨率的情况下, 我们把rpx与px的换算比率进行自动调整
+
+<img src='/docs/wx/750rpx.png' alt='750rpx.png'>
+
+| 设备         | rpx换算px (屏幕宽度/750) | px换算rpx (750/屏幕宽度) |
+| ------------ | ------------------------ | ------------------------ |
+| iPhone5      | 1rpx = 0.42px            | 1px = 2.34rpx            |
+| **iPhone6**  | **1rpx = 0.5px**         | **1px = 2rpx**           |
+| iPhone6 Plus | 1rpx = 0.552px           | 1px = 1.81rpx            |
+
+- wxss 选择器
+
+| 选择器           | 样例           | 样例描述                                       |
+| ---------------- | -------------- | ---------------------------------------------- |
+| **.class**       | **.intro**     | **选择所有拥有 class="intro" 的组件**          |
+| #id              | #firstname     | 选择拥有 id="firstname" 的组件                 |
+| element          | view           | 选择所有 view 组件                             |
+| element, element | view, checkbox | 选择所有文档的 view 组件和所有的 checkbox 组件 |
+| ::after          | view::after    | 在 view 组件后边插入内容                       |
+| ::before         | view::before   | 在 view 组件前边插入内容                       |
+
+**wxss 不支持 `> + ~` 等等，推荐使用类名选择器**。
+
+- 样式导入
+
+```css
+@import './test.wxss';/**会被编译到目标文件，不会产生多与文件请求**/
+@import url('/test.wxss');/**这种写法，不会打包合并，会产生文件请求**/
+```
+
+- 样式优先级
+
+`!important：∞ > 内联style:1000 > #id:100 > .class:10 > 标签选择器element:1`
+
+### 1.2 小程序结构
+
+<img src='/docs/wx/wxapp01.png' alt='wxapp01.png'>
+
+<img src='/docs/wx/wxapp02.png' alt='wxapp02.png'>
+
+- 入口文件 `app.js`
+
+```javascript
+//app.js
+App({
+    
+})
+```
+
+地位类似于 Vue 里面的 index.js 整个小程序只有一个 App 实例，是全部页面共享的。开发者可以通过 getApp 方法获取到全局唯一的 App 实例，获取App上的数据或调用开发者注册在 App 上的函数。
+
+鉴于小程序没有类似Vuex之类的全局的数据管理工具，因此一般我们需要在多个页面使用到的变量数据，就存在app.js里面的globalData里面。
+
+- 全局配置文件 app.json
+
+app.json 是当前小程序的全局配置，包括了小程序的所有页面路径、界面表现、网络超时时间、底部 tab 等。
+
+```json
+{
+    "pages":[
+        "pages/index/index",
+        "pages/logs/logs"
+    ],
+    "window":{
+        "backroundTextStyle":"light",
+        "navigationBarBackgroundColor":"#fff",
+        "navigationBarTitleText":"WeChat",
+        "navigationBarTextStyle":"black"
+    },
+    "style":"v2",
+    "sitemapLocation":"sitemap.json"
+}
+```
+
+pages字段：用于描述当前小程序所有页面路径，这是为了让微信客户端知道当前你的小程序页面定义在哪个目录。当我们新建页面时，根据新建方法的不同，需要检查pages。也可以直接在pages新增配置来自动创建页面。
+
+window字段： 定义小程序所有页面的顶部背景颜色，文字颜色定义等。
+
+style字段：指定使用weui样式的版本。
+
+sitemapLocation：指明 sitemap.json 的位置。
+
+### 1.3 小程序生命周期
+
+```javascript
+App({
+  onLaunch (options) {
+    // 小程序初始化完成时触发，全局只触发一次。参数也可以使用 wx.getLaunchOptionsSync 获取。
+  },
+  onShow (options) {
+    // 小程序启动，或从后台进入前台显示时触发。也可以使用 wx.onAppShow 绑定监听。
+  },
+  onHide () {
+    // 小程序从前台进入后台时触发。也可以使用 wx.onAppHide 绑定监听。
+  },
+  onError (msg) {
+    // 小程序发生脚本错误或 API 调用报错时触发。也可以使用 wx.onError 绑定监听。
+  },
+  globalData: 'I am global data'
+})
+```
+
+
+
+### 1.4 小程序页面生命周期
+
+page生命周期是微信客户端根据用户操作主动处罚的
+
+```javascript
+onLoad: function(options) {
+	// 页面创建时执行，页面销毁前只会触发一次，在这里可以拿到上一个页面传递的数据
+},
+onShow: function() {
+	// 页面出现在前台时执行，页面第一次显示、从其他页面返回都会触发
+},
+onReady: function() {
+	// 页面首次渲染完毕时执行，页面销毁前只会触发一次
+},
+onHide: function() {
+	// 页面从前台变为后台时执行，使用 wx.navigateTo 跳转，或底部tab切换页面会触发
+},
+onUnload: function() {
+	// 页面销毁时执行，使用 wx.redirectTo 或 wx.navigateBack 返回，当前页面被销毁
+}
+```
+
+### 1.5 用户行为
+
+```javascript
+onPullDownRefresh: function() {
+	// 触发下拉刷新时执行
+},
+onReachBottom: function() {
+	// 页面触底时执行
+},
+onShareAppMessage: function () {
+	// 页面被用户分享时执行
+},
+onPageScroll: function() {
+	// 页面滚动时执行
+},
+onResize: function() {
+	// 页面尺寸变化时执行
+},
+```
+
+- onPullDownRefresh 监听用户下拉
+
+> 需要在`app.json`的[`window`](https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html#window)选项中或[页面配置](https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/page.html)中开启`enablePullDownRefresh`。
+>
+> 可以通过[wx.startPullDownRefresh](https://developers.weixin.qq.com/miniprogram/dev/api/ui/pull-down-refresh/wx.startPullDownRefresh.html)触发下拉刷新，调用后触发下拉刷新动画，效果与用户手动下拉刷新一致。
+>
+> 当处理完数据刷新后，[wx.stopPullDownRefresh](https://developers.weixin.qq.com/miniprogram/dev/api/ui/pull-down-refresh/wx.stopPullDownRefresh.html)可以停止当前页面的下拉刷新。
+
+```json
+"enablePullDownRefresh":true
+```
+
+- onShareAppMessage 定义此方法后，右上角才会显示分享按钮，需要 return 一个配置对象，自定义分享内容。
+
+```javascript
+onShareAppMessage: function () {
+    return {
+        title:'自定义转发标题',
+        path:'转发路径，默认当前页面 path ，必须是以 / 开头的完整路径',
+        imageUrl:'自定义图片路径，可以是本地文件路径、代码包文件路径或者网络图片路径。支持PNG及JPG。显示图片长宽比是 5:4，默认为截图'
+    }
+}
+```
+
+### 1.6 简易双向数据绑定
+
+只能是一个单一字段的数据，不能绑定对象的某个属性
+
+```javascript
+<input model:value="{{inputVal}}"/>
+```
+
+### 1.7 事件
+
+[官方文档详解](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxml/event.html#%E4%BA%8B%E4%BB%B6%E8%AF%A6%E8%A7%A3)
+
+| 类型               | 触发条件                                                     |
+| ------------------ | ------------------------------------------------------------ |
+| touchstart         | 手指触摸动作开始                                             |
+| touchmove          | 手指触摸后移动                                               |
+| touchcancel        | 手指触摸动作被打断，如来电提醒，弹窗                         |
+| touchend           | 手指触摸动作结束                                             |
+| **tap**            | **点击，手指触摸后马上离开**                                 |
+| longpress          | 手指触摸后，超过350ms再离开，如果指定了事件回调函数并触发了这个事件，tap事件将不被触发 |
+| **longtap**        | **长按，手指触摸后，超过350ms再离开（推荐使用longpress事件代替）** |
+| transitionend      | 会在 WXSS transition 或 wx.createAnimation 动画结束后触发    |
+| animationstart     | 会在一个 WXSS animation 动画开始时触发                       |
+| animationiteration | 会在一个 WXSS animation 一次迭代结束时触发                   |
+| animationend       | 会在一个 WXSS animation 动画完成时触发                       |
+| touchforcechange   | 在支持 3D Touch 的 iPhone 设备，重按时会触发                 |
+
+事件绑定：bind
+
+```javascript
+<view bindtap="handleTap">
+    Click here!
+</view>
+```
+
+绑定并阻止事件冒泡：catch
+
+```javascript
+<view catchtap="handleTap">
+    Click here!
+</view>
+```
+
+### 1.8 setData 方法
+
+[官方文档地址](https://developers.weixin.qq.com/miniprogram/dev/framework/performance/tips.html)
+
+```javascript
+setData(data,callBack);//callBack在本次setData对界面渲染完毕后触发
+```
+
+原则上：每次只设置需要改变的最小单位数据，同一个事件里合并多次setData，
+
+`Page`实例原型中中`setData`方法，小程序的渲染层 `WebView` 和逻辑层 `JavascriptCore` 是在两个线程中运行，彼此独立，并不具备数据直接共享的通道。当前，视图层和逻辑层的数据传输，实际上通过两边提供的 `evaluateJavascript` 所实现。即用户传输的数据，需要将其转换为字符串形式传递，同时把转换后的数据内容拼接成一份 JS 脚本，再通过执行 JS 脚本的形式传递到两边独立环境。 
+
+setData几种操作不可取
+
+- 1.频繁调用setData
+
+部分小程序非常频繁（毫秒级）的去`setData`，其导致了两个后果：
+
+Android 下用户在滑动时会感觉到卡顿，操作反馈延迟严重，因为 JS 线程一直在编译执行渲染，未能及时将用户操作事件传递到逻辑层，逻辑层亦无法及时将操作处理结果及时传递到视图层；
+
+渲染有出现延时，由于 WebView 的 JS 线程一直处于忙碌状态，逻辑层到页面层的通信耗时上升，视图层收到的数据消息时距离发出时间已经过去了几百毫秒，渲染的结果并不实时；
+
+- 2.每次setData传递大量数据
+
+由`setData`的底层实现可知，我们的数据传输实际是一次 `evaluateJavascript` 脚本过程，当数据量过大时会增加脚本的编译执行时间，占用 WebView JS 线程。
+
+- 3.后台页面进行setData
+
+当页面进入后台态（用户不可见），不应该继续去进行`setData`，后台态页面的渲染用户是无法感受的，另外后台态页面去`setData`也会抢占前台页面的执行。 
+
+### 1.9 插值{{ }}
+
+数据用双花括号插值
+
+```html
+<view>
+	{{message}}
+</view>
+<input model:value="{{message}}"/>
+```
+
+### 1.10 条件渲染
+
+条件渲染符合 vue 语法，判断多个组件或标签时可使用`<block></block>`占位标签，减少无意义标签。
+
+```html
+<view wx:if="{{}}">one</view>
+<view wx:elif="{{}}">one</view>
+<view wx:else>one</view>
+```
+
+### 1.11 列表渲染
+
+`wx:for`，直接使用默认得到index，item，可使用`<block></block>`占位标签，减少无意义标签。
+
+```html
+<view wx:for="{{List}}">
+	{{index}}--{{item}}
+</view>
+```
+
+需要指定别名：
+
+```html
+<view wx:for="{{List}}" wx:for-index='idx' wx:for-item='itemName'>
+	{{idx}}--{{itemName}}
+</view>
+```
+
+### 1.12 template模板
+
+新建模板`/template/list-template/list-template.wxml`，模板样式`/template/list-template/list-template.wxss`，检查app.json pages注册。
+
+```html
+<!--list-template.wxml-->
+<template name='list'>
+	<view class='list-wrapper'>
+    	<text class='list-text'>{{templateData.msg}}--hello world</text>
+    </view>
+</template>
+```
+
+```css
+/**list-template.wxml**/
+.list-wrapper{
+    background-color:#ddd;
+}
+.list-text{
+    color:red;
+    font-size:16px;
+}
+```
+
+使用模板
+
+```html
+<!--index.wxml-->
+<import src='/template/list-template/list-template.wxml'/>
+<view>
+    <template is='list' data='{{templateData}}'></template>
+</view>
+```
+
+样式需要单独引入
+
+```css
+/**index.wxss**/
+@import '/template/list-template/list-template.wxss';
+```
+
+### 1.13 全局变量
+
+通过全局函数 `getApp` 可以获取全局的应用实例，如果需要全局的数据可以在 `App()` 中设置，如： 
+
+```javascript
+//app.js 入口文件中定义，保证后续都能访问
+App({
+    globalData: 1
+})
+```
+
+```javascript
+//在 a.js 访问
+console.log(getApp().globalData)
+```
+
+```javascript
+//在 b.js 访问
+var app = getApp()
+app.globalData++
+```
+
+
+
+### 1.14 页面跳转，页面栈概念
+
+| 路由方式   | 触发时机                                                     | 路由前页面 | 路由后页面         |
+| ---------- | ------------------------------------------------------------ | ---------- | ------------------ |
+| 初始化     | 小程序打开的第一个页面                                       |            | onLoad, onShow     |
+| 打开新页面 | 调用 API [wx.navigateTo](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.navigateTo.html) 使用组件 [``](https://developers.weixin.qq.com/miniprogram/dev/component/navigator.html) | onHide     | onLoad, onShow     |
+| 页面重定向 | 调用 API [wx.redirectTo](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.redirectTo.html) 使用组件 [``](https://developers.weixin.qq.com/miniprogram/dev/component/navigator.html) | onUnload   | onLoad, onShow     |
+| 页面返回   | 调用 API [wx.navigateBack](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.navigateBack.html) 使用组件[``](https://developers.weixin.qq.com/miniprogram/dev/component/navigator.html) 用户按左上角返回按钮 | onUnload   | onShow             |
+| Tab 切换   | 调用 API [wx.switchTab](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.switchTab.html) 使用组件 [``](https://developers.weixin.qq.com/miniprogram/dev/component/navigator.html) 用户切换 Tab |            | 各种情况请参考下表 |
+| 重启动     | 调用 API [wx.reLaunch](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.reLaunch.html) 使用组件 [``](https://developers.weixin.qq.com/miniprogram/dev/component/navigator.html) | onUnload   | onLoad, onShow     |
+
+**wx.navigateTo()和wx.redirectTo()只能打开非tabBar页面。**
+
+#### wx.navigateTo(Object object)
+
+保留当前页面，跳转到应用内的某个页面。但是不能跳到 tabbar 页面。使用 [wx.navigateBack](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.navigateBack.html) 可以返回到原页面。小程序中页面栈最多十层。
+
+参数：
+
+| 属性     | 类型     | 默认值 | 必填 | 说明                                                         |
+| -------- | -------- | ------ | ---- | ------------------------------------------------------------ |
+| url      | string   |        | 是   | 需要跳转的应用内非 tabBar 的页面的路径 (代码包路径), 路径后可以带参数。参数与路径之间使用 `?` 分隔，参数键与参数值用 `=` 相连，不同参数用 `&` 分隔；如 'path?key=value&key2=value2' |
+| events   | Object   |        | 否   | 页面间通信接口，用于监听被打开页面发送到当前页面的数据。基础库 2.7.3 开始支持。 |
+| success  | function |        | 否   | 接口调用成功的回调函数                                       |
+| fail     | function |        | 否   | 接口调用失败的回调函数                                       |
+| complete | function |        | 否   | 接口调用结束的回调函数（调用成功、失败都会执行               |
+
+#### 页面栈
+
+`wx.navigateTo()`使用两次后，页面层级有3层，这样的页面层级关系就是页面栈，页面栈最多十层。
+
+首页pageA`wx.navigateTo()`-->页面pageB`wx.navigateTo()`-->详情页pageC
+
+描述为：[pageA，pageB，pageC]，C是当前所处页面，最上层，A为最根层。
+
+当前页pageC `wx.navigateTo(url:pageD)`-->[pageA，pageB，pageC，pageD]
+
+- 结合页面生命周期理解：
+
+当前页pageD `wx.navigateBack()` -->[pageA，pageB，pageC]，此时D被回收调用pageD.onUnload()，pageC.onShow()
+
+当前页pageC `wx.redirectTo(url:pageE)` -->[pageA，pageB，pageE]，此时pageC.onUnload()，pageE.onLoad()，pageE.onshow()，pageE.onReady()
+
+- 结合tabBar
+
+```javascript
+tabBar:{
+    "list":[
+        {"text":"tab1","pagePath":"pageA"},
+        {"text":"tab2","pagePath":"pageF"},
+        {"text":"tab3","pagePath":"pageG"},
+    ]
+}
+```
+
+当前页pageE `wx.switchTab(url:pageF)`，此时原来的页面栈会被全部清空（除了pageA）。此时的页面栈 [pageF]，此时点击 tab1 切换到 pageA ，pageA 不会触发 onLoad()，pageA没有被销毁。
+
+#### 页面通信
+
+如果一个页面由另一个页面通过 [`wx.navigateTo`](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.navigateTo.html) 打开，这两个页面间将建立一条数据通道：
+
+- 被打开的页面可以通过 `this.getOpenerEventChannel()` 方法来获得一个 `EventChannel` 对象；
+- `wx.navigateTo` 的 `success` 回调中也包含一个 `EventChannel` 对象。
+
+这两个 `EventChannel` 对象间可以使用 `emit` 和 `on` 方法相互发送、监听事件。
+
+### 1.15 wx.request
+
+[文档地址](https://developers.weixin.qq.com/miniprogram/dev/api/network/request/wx.request.html)
+
+| 属性         | 类型                      | 默认值 | 必填 | 说明                                                         | 最低版本                                                     |
+| ------------ | ------------------------- | ------ | ---- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| url          | string                    |        | 是   | 开发者服务器接口地址                                         |                                                              |
+| data         | string/object/ArrayBuffer |        | 否   | 请求的参数                                                   |                                                              |
+| header       | Object                    |        | 否   | 设置请求的 header，header 中不能设置 Referer。 `content-type` 默认为 `application/json` |                                                              |
+| timeout      | number                    |        | 否   | 超时时间，单位为毫秒                                         | [2.10.0](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) |
+| method       | string                    | GET    | 否   | HTTP 请求方法                                                |                                                              |
+| dataType     | string                    | json   | 否   | 返回的数据格式                                               |                                                              |
+| responseType | string                    | text   | 否   | 响应的数据类型                                               | [1.7.0](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) |
+| enableHttp2  | boolean                   | false  | 否   | 开启 http2                                                   | [2.10.4](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) |
+| enableQuic   | boolean                   | false  | 否   | 开启 quic                                                    | [2.10.4](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) |
+| enableCache  | boolean                   | false  | 否   | 开启 cache                                                   | [2.10.4](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) |
+| success      | function                  |        | 否   | 接口调用成功的回调函数                                       |                                                              |
+| fail         | function                  |        | 否   | 接口调用失败的回调函数                                       |                                                              |
+| complete     | function                  |        | 否   | 接口调用结束的回调函数（调用成功、失败都会执行）             |                                                              |
+
+示例：
+
+```javascript
+wx.request({
+  url: 'test.php', //仅为示例，并非真实的接口地址
+  data: {
+    x: '',
+    y: ''
+  },
+  header: {
+    'content-type': 'application/json' // 默认值
+  },
+  success (res) {
+    console.log(res.data)
+  }
+})
+```
+
+
+
+### 1.16 云函数
+
+[云函数文档：云开发>基础>云开发能力>云函数](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/reference-sdk-api/init/server.init.html)
+
+云开发简单理解就是一个nodejs服务
+
+云开发注意问题：需要安装依赖，云函数本地调试报错是由于热更新，逻辑没写完，不用管。
+
+```javascript
+// 云函数入口文件
+const cloud = require('wx-server-sdk')
+cloud.init()
+// 云函数入口函数
+exports.main = async (event, context) => {
+    const wxContext = cloud.getWXContext()
+    return {//返回一个对象
+        event,
+        openid: wxContext.OPENID,
+        appid: wxContext.APPID,
+        unionid: wxContext.UNIONID,
+    }
+}
+```
+
+调用云函数
+
+```javascript
+wx.cloud.init();
+wx.cloud.callFunction({
+    name:'云函数名',
+    data:{
+        //要发送给云函数的数据
+    },
+    success(res){
+        console.log(res)
+    }
+})
+```
+
+### 1.17 数据库
+
+[数据库文档：云开发>开发指引>数据库](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/guide/database/add.html)
+
+需要注意：云函数里使用数据库操作只能用 promise 不能用回调，回调有问题，并且小程序容易抽风，重启解决大部分问题。
+
+小程序数据库是文档型数据库，类似mongodb，比关系型数据库简单。
+
+- 获取数据库引用
+
+```javascript
+const db = wx.cloud.database()
+```
+
+- 连接集合
+
+```javascript
+const todos = db.collection('todos')
+```
+
+- 添加数据
+
+```javascript
+db.collection('todos').add({
+  // data 字段表示需新增的 JSON 数据
+  data: {
+    description: "learn cloud database",
+    due: new Date("2018-09-01"),
+    tags: [
+      "cloud",
+      "database"
+    ],
+    location: new db.Geo.Point(113, 23),
+    done: false
+  }
+})
+.then(res => {
+  console.log(res)
+})
+```
+
+- 查询
+
+[文档：云开发>开发指引>数据库](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/guide/database/read.html)
+
+查询指令
+
+[文档：云开发>开发指引>数据库](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/guide/database/query.html)
+
+| 查询指令 | 说明                 |
+| -------- | -------------------- |
+| eq       | 等于                 |
+| neq      | 不等于               |
+| lt       | 小于                 |
+| lte      | 小于或等于           |
+| gt       | 大于                 |
+| gte      | 大于或等于           |
+| in       | 字段值在给定数组中   |
+| nin      | 字段值不在给定数组中 |
+
+- 更新
+
+[文档：云开发>开发指引>数据库](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/guide/database/update.html)
