@@ -2,13 +2,13 @@
 
 [官方文档地址](https://developers.weixin.qq.com/miniprogram/dev/component/)
 
-## 1. 基础部分
+# 1. 基础部分
 
 本篇文章旨在快速上手小程序，在有 Vue 作为前置知识的情况下，理解。
 
-### 1.1 rpx wxss
+## 1.1 rpx wxss
 
-- wxss小程序样式特性：
+### wxss小程序样式特性：
 
 **尺寸单位 `rpx` 核心点**。移动设备的分辨率与rpx：
 
@@ -38,7 +38,7 @@
 | **iPhone6**  | **1rpx = 0.5px**         | **1px = 2rpx**           |
 | iPhone6 Plus | 1rpx = 0.552px           | 1px = 1.81rpx            |
 
-- wxss 选择器
+### wxss 选择器
 
 | 选择器           | 样例           | 样例描述                                       |
 | ---------------- | -------------- | ---------------------------------------------- |
@@ -62,13 +62,13 @@
 
 `!important：∞ > 内联style:1000 > #id:100 > .class:10 > 标签选择器element:1`
 
-### 1.2 小程序结构
+## 1.2 小程序结构
 
 <img src='/docs/wx/wxapp01.png' alt='wxapp01.png'>
 
 <img src='/docs/wx/wxapp02.png' alt='wxapp02.png'>
 
-- 入口文件 `app.js`
+### 入口文件 `app.js`
 
 ```javascript
 //app.js
@@ -81,7 +81,7 @@ App({
 
 鉴于小程序没有类似Vuex之类的全局的数据管理工具，因此一般我们需要在多个页面使用到的变量数据，就存在app.js里面的globalData里面。
 
-- 全局配置文件 app.json
+### 全局配置文件 app.json
 
 app.json 是当前小程序的全局配置，包括了小程序的所有页面路径、界面表现、网络超时时间、底部 tab 等。
 
@@ -110,7 +110,7 @@ style字段：指定使用weui样式的版本。
 
 sitemapLocation：指明 sitemap.json 的位置。
 
-### 1.3 小程序生命周期
+## 1.3 小程序生命周期
 
 ```javascript
 App({
@@ -132,7 +132,7 @@ App({
 
 
 
-### 1.4 小程序页面生命周期
+## 1.4 小程序页面生命周期
 
 page生命周期是微信客户端根据用户操作主动处罚的
 
@@ -154,7 +154,7 @@ onUnload: function() {
 }
 ```
 
-### 1.5 用户行为
+## 1.5 用户行为
 
 ```javascript
 onPullDownRefresh: function() {
@@ -174,7 +174,9 @@ onResize: function() {
 },
 ```
 
-- onPullDownRefresh 监听用户下拉
+### onPullDownRefresh 
+
+监听用户下拉
 
 > 需要在`app.json`的[`window`](https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html#window)选项中或[页面配置](https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/page.html)中开启`enablePullDownRefresh`。
 >
@@ -186,7 +188,9 @@ onResize: function() {
 "enablePullDownRefresh":true
 ```
 
-- onShareAppMessage 定义此方法后，右上角才会显示分享按钮，需要 return 一个配置对象，自定义分享内容。
+### onShareAppMessage 
+
+定义此方法后，右上角才会显示分享按钮，需要 return 一个配置对象，自定义分享内容。
 
 ```javascript
 onShareAppMessage: function () {
@@ -198,7 +202,9 @@ onShareAppMessage: function () {
 }
 ```
 
-### 1.6 简易双向数据绑定
+## 1.6 简易双向数据绑定
+
+[文档：指南>小程序框架>视图层>简易双向绑定](https://developers.weixin.qq.com/miniprogram/dev/framework/view/two-way-bindings.html)
 
 只能是一个单一字段的数据，不能绑定对象的某个属性
 
@@ -206,7 +212,7 @@ onShareAppMessage: function () {
 <input model:value="{{inputVal}}"/>
 ```
 
-### 1.7 事件
+## 1.7 事件
 
 [官方文档详解](https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxml/event.html#%E4%BA%8B%E4%BB%B6%E8%AF%A6%E8%A7%A3)
 
@@ -241,7 +247,7 @@ onShareAppMessage: function () {
 </view>
 ```
 
-### 1.8 setData 方法
+## 1.8 setData 方法
 
 [官方文档地址](https://developers.weixin.qq.com/miniprogram/dev/framework/performance/tips.html)
 
@@ -249,11 +255,13 @@ onShareAppMessage: function () {
 setData(data,callBack);//callBack在本次setData对界面渲染完毕后触发
 ```
 
-原则上：每次只设置需要改变的最小单位数据，同一个事件里合并多次setData，
+原则上：每次只设置需要改变的最小单位数据，同一个事件里合并多次setData
+
+### setData理解
 
 `Page`实例原型中中`setData`方法，小程序的渲染层 `WebView` 和逻辑层 `JavascriptCore` 是在两个线程中运行，彼此独立，并不具备数据直接共享的通道。当前，视图层和逻辑层的数据传输，实际上通过两边提供的 `evaluateJavascript` 所实现。即用户传输的数据，需要将其转换为字符串形式传递，同时把转换后的数据内容拼接成一份 JS 脚本，再通过执行 JS 脚本的形式传递到两边独立环境。 
 
-setData几种操作不可取
+### setData几种操作不可取
 
 - 1.频繁调用setData
 
@@ -271,9 +279,11 @@ Android 下用户在滑动时会感觉到卡顿，操作反馈延迟严重，因
 
 当页面进入后台态（用户不可见），不应该继续去进行`setData`，后台态页面的渲染用户是无法感受的，另外后台态页面去`setData`也会抢占前台页面的执行。 
 
-### 1.9 插值{{ }}
+## 1.9 插值{{ }}
 
-数据用双花括号插值
+[文档地址：框架>WXML语法参考>数据绑定](https://developers.weixin.qq.com/miniprogram/dev/reference/wxml/data.html )
+
+数据用双花括号插值，可以进行运算，简单的三目，算术，逻辑运算等。
 
 ```html
 <view>
@@ -282,9 +292,11 @@ Android 下用户在滑动时会感觉到卡顿，操作反馈延迟严重，因
 <input model:value="{{message}}"/>
 ```
 
-### 1.10 条件渲染
+## 1.10 条件渲染
 
-条件渲染符合 vue 语法，判断多个组件或标签时可使用`<block></block>`占位标签，减少无意义标签。
+[文档地址：框架>WXML语法参考>条件渲染](https://developers.weixin.qq.com/miniprogram/dev/reference/wxml/conditional.html  )
+
+`wx:if`条件渲染符合 vue 语法，判断多个组件或标签时可使用`<block></block>`占位标签，减少无意义标签。
 
 ```html
 <view wx:if="{{}}">one</view>
@@ -292,9 +304,15 @@ Android 下用户在滑动时会感觉到卡顿，操作反馈延迟严重，因
 <view wx:else>one</view>
 ```
 
-### 1.11 列表渲染
+`hidden`相当于 `Vue v-show`，组件始终会被渲染，只是简单的控制显示与隐藏。 
 
-`wx:for`，直接使用默认得到index，item，可使用`<block></block>`占位标签，减少无意义标签。
+如果频繁切换状态，`wx:if`控制组件销毁和渲染，会产生非常大的性能开销，使用`hidden`优化。
+
+## 1.11 列表渲染
+
+[文档地址：框架>WXML语法参考>列表渲染](https://developers.weixin.qq.com/miniprogram/dev/reference/wxml/list.html)
+
+`wx:for`，默认数组的当前项的下标变量名默认为 `index`，数组当前项的变量名默认为 `item` ，可使用`<block></block>`占位标签，减少无意义标签。
 
 ```html
 <view wx:for="{{List}}">
@@ -310,9 +328,15 @@ Android 下用户在滑动时会感觉到卡顿，操作反馈延迟严重，因
 </view>
 ```
 
-### 1.12 template模板
+**wx:key**同样，key唯一标识很重要
+
+## 1.12 template模板
+
+[文档地址：框架>WXML语法参考>模板](https://developers.weixin.qq.com/miniprogram/dev/reference/wxml/template.html)
 
 新建模板`/template/list-template/list-template.wxml`，模板样式`/template/list-template/list-template.wxss`，检查app.json pages注册。
+
+模板和组件场景，如果没有交互，用模板。
 
 ```html
 <!--list-template.wxml-->
@@ -324,7 +348,7 @@ Android 下用户在滑动时会感觉到卡顿，操作反馈延迟严重，因
 ```
 
 ```css
-/**list-template.wxml**/
+/**list-template.wxss**/
 .list-wrapper{
     background-color:#ddd;
 }
@@ -351,7 +375,9 @@ Android 下用户在滑动时会感觉到卡顿，操作反馈延迟严重，因
 @import '/template/list-template/list-template.wxss';
 ```
 
-### 1.13 全局变量
+## 1.13 全局变量
+
+[文档地址：指南>小程序框架>逻辑层>模块化](https://developers.weixin.qq.com/miniprogram/dev/framework/app-service/module.html#%E6%96%87%E4%BB%B6%E4%BD%9C%E7%94%A8%E5%9F%9F)
 
 通过全局函数 `getApp` 可以获取全局的应用实例，如果需要全局的数据可以在 `App()` 中设置，如： 
 
@@ -375,7 +401,7 @@ app.globalData++
 
 
 
-### 1.14 页面跳转，页面栈概念
+## 1.14 页面跳转，页面栈概念
 
 | 路由方式   | 触发时机                                                     | 路由前页面 | 路由后页面         |
 | ---------- | ------------------------------------------------------------ | ---------- | ------------------ |
@@ -388,9 +414,11 @@ app.globalData++
 
 **wx.navigateTo()和wx.redirectTo()只能打开非tabBar页面。**
 
-#### wx.navigateTo(Object object)
+使用 [wx.navigateBack](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.navigateBack.html) 可以返回到原页面。小程序中页面栈最多十层。
 
-保留当前页面，跳转到应用内的某个页面。但是不能跳到 tabbar 页面。使用 [wx.navigateBack](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.navigateBack.html) 可以返回到原页面。小程序中页面栈最多十层。
+### wx.navigateTo()
+
+保留当前页面，跳转到应用内的某个页面，但是不能跳到 tabbar 页面。
 
 参数：
 
@@ -402,7 +430,7 @@ app.globalData++
 | fail     | function |        | 否   | 接口调用失败的回调函数                                       |
 | complete | function |        | 否   | 接口调用结束的回调函数（调用成功、失败都会执行               |
 
-#### 页面栈
+### 页面栈
 
 `wx.navigateTo()`使用两次后，页面层级有3层，这样的页面层级关系就是页面栈，页面栈最多十层。
 
@@ -412,13 +440,13 @@ app.globalData++
 
 当前页pageC `wx.navigateTo(url:pageD)`-->[pageA，pageB，pageC，pageD]
 
-- 结合页面生命周期理解：
+- #### 结合页面生命周期理解：
 
 当前页pageD `wx.navigateBack()` -->[pageA，pageB，pageC]，此时D被回收调用pageD.onUnload()，pageC.onShow()
 
 当前页pageC `wx.redirectTo(url:pageE)` -->[pageA，pageB，pageE]，此时pageC.onUnload()，pageE.onLoad()，pageE.onshow()，pageE.onReady()
 
-- 结合tabBar
+- #### 结合tabBar
 
 ```javascript
 tabBar:{
@@ -432,7 +460,7 @@ tabBar:{
 
 当前页pageE `wx.switchTab(url:pageF)`，此时原来的页面栈会被全部清空（除了pageA）。此时的页面栈 [pageF]，此时点击 tab1 切换到 pageA ，pageA 不会触发 onLoad()，pageA没有被销毁。
 
-#### 页面通信
+### 页面通信
 
 如果一个页面由另一个页面通过 [`wx.navigateTo`](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.navigateTo.html) 打开，这两个页面间将建立一条数据通道：
 
@@ -441,9 +469,9 @@ tabBar:{
 
 这两个 `EventChannel` 对象间可以使用 `emit` 和 `on` 方法相互发送、监听事件。
 
-### 1.15 wx.request
+## 1.15 wx.request
 
-[文档地址](https://developers.weixin.qq.com/miniprogram/dev/api/network/request/wx.request.html)
+[文档地址：API>网络>发起请求](https://developers.weixin.qq.com/miniprogram/dev/api/network/request/wx.request.html)
 
 | 属性         | 类型                      | 默认值 | 必填 | 说明                                                         | 最低版本                                                     |
 | ------------ | ------------------------- | ------ | ---- | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -481,7 +509,7 @@ wx.request({
 
 
 
-### 1.16 云函数
+## 1.16 云函数
 
 [云函数文档：云开发>基础>云开发能力>云函数](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/reference-sdk-api/init/server.init.html)
 
@@ -520,7 +548,7 @@ wx.cloud.callFunction({
 })
 ```
 
-### 1.17 数据库
+## 1.17 数据库
 
 [数据库文档：云开发>开发指引>数据库](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/guide/database/add.html)
 
@@ -528,46 +556,134 @@ wx.cloud.callFunction({
 
 小程序数据库是文档型数据库，类似mongodb，比关系型数据库简单。
 
-- 获取数据库引用
+### 获取数据库引用
 
 ```javascript
 const db = wx.cloud.database()
 ```
 
-- 连接集合
+### 连接集合
 
 ```javascript
-const todos = db.collection('todos')
+const todos = db.collection('message')//连接message集合
 ```
 
-- 添加数据
+### 添加数据
 
 ```javascript
-db.collection('todos').add({
-  // data 字段表示需新增的 JSON 数据
-  data: {
-    description: "learn cloud database",
-    due: new Date("2018-09-01"),
-    tags: [
-      "cloud",
-      "database"
-    ],
-    location: new db.Geo.Point(113, 23),
-    done: false
-  }
-})
-.then(res => {
-  console.log(res)
-})
+// addMessage云函数入口文件
+const cloud = require('wx-server-sdk')
+cloud.init()
+let db = cloud.database()//获取数据库引用
+// 云函数入口函数
+exports.main = async (event, context) => {
+    return new Promise((resolve, reject) => {
+        db.collection('message').add({//连接message集合
+            data: {
+                age:event.age,
+                author:event.author,
+                content: event.content,
+                time: new Date().toLocaleString()
+            }
+        }).then((res) => {
+            console.log(res);
+            resolve(res);
+        }).catch((err) => {
+            resolve(err);
+        })
+    })
+}
+//通过云函数调用
+addMessage(){
+    wx.cloud.callFunction({
+        name:'addMessage',//云函数名
+        data:{//传递数据给云函数
+            age:'18',
+            author:'十月',
+            content:'第一条数据，今天五月18日'
+        },
+        success(res){
+        	console.log(res)//添加成功返回的是数据的_id
+        }
+    })
+},
 ```
 
-- 查询
+### 查询
 
-[文档：云开发>开发指引>数据库](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/guide/database/read.html)
+[文档：云开发>开发指引>数据库>增删改查SDK>查询](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/guide/database/read.html)
+
+`where` 方法接收一个对象参数，该对象中每个字段和它的值构成一个需满足的匹配条件，**各个字段间的关系是 "与" 的关系**，即需同时满足这些匹配条件 
+
+```javascript
+// getMessage云函数入口文件
+const cloud = require('wx-server-sdk')
+cloud.init()
+let db = cloud.database()
+// 云函数入口函数
+exports.main = async (event, context) => {
+    return new Promise((resolve,reject)=>{
+        db.collection('message').where({//where查询条件
+            author:event.author
+        }).get().then(res=>{//get()返回的是promise
+            resolve(res)
+        })
+    })
+}
+//通过云函数调用
+getMessage(){
+    wx.cloud.callFunction({
+        name:'getMessage',//云函数名
+        data:{//传递数据给云函数
+        	author:'十月'
+        },
+        success(res){
+        	console.log(res.result.data)//查询得到的数据是array
+        }
+    })
+},
+```
+
+不使用云函数，直接查询也可以。
+
+```javascript
+//promise写法，get()返回的是promise
+getMessage(){
+    wx.cloud.database().collection('message').where({
+    	author:'十月'
+    }).get().then((res)=>{
+    	console.log(res.data);
+    })
+},
+//get()回调写法
+getMessage(){
+    wx.cloud.database().collection('message').where({
+    	author:'十月'
+    }).get({
+        success(res){
+            console.log(res.data);
+        }
+    })
+},
+```
+
+**查询指令的坑：云函数内使用get()方法，只能使用promise形式，不能用`get({success(res){console.log(res)}})`回调方式**。
+
+使用数据库 API 提供的 where 方法我们可以构造复杂的查询条件完成复杂的查询任务. 数据库 API 提供了大于、小于等多种查询指令，这些指令都暴露在 db.command 对象上。
+
+```javascript
+let db = wx.cloud.database()
+let _ = db.command
+db.collection('message').where({
+	age:_.gt(18)//查询age>18
+}).get().then((res)=>{
+	console.log(res.data)
+})
+```
 
 查询指令
 
-[文档：云开发>开发指引>数据库](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/guide/database/query.html)
+[文档：云开发>开发指引>数据库>增删改查SDK>查询指令](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/guide/database/query.html)
 
 | 查询指令 | 说明                 |
 | -------- | -------------------- |
@@ -580,6 +696,223 @@ db.collection('todos').add({
 | in       | 字段值在给定数组中   |
 | nin      | 字段值不在给定数组中 |
 
-- 更新
+查询多个条件
 
-[文档：云开发>开发指引>数据库](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/guide/database/update.html)
+`&&`
+
+```javascript
+let db = wx.cloud.database()
+let _ = db.command
+db.collection('message').where({
+	age:_.gt(18).and(_.lt(25))//查询 age>18 && age<25
+}).get().then((res)=>{
+	console.log(res.data)
+})
+```
+
+`||`
+
+```javascript
+let db = wx.cloud.database()
+let _ = db.command
+db.collection('message').where({
+	age:_.eq(18).or(_.eq(25))//查询 age=18 || age=25
+}).get().then((res)=>{
+	console.log(res.data)
+})
+```
+
+非
+
+```javascript
+let db = wx.cloud.database()
+let _ = db.command
+db.collection('message').where({
+	age:_.not(_.eq(18))//查询 age!==18
+}).get().then((res)=>{
+	console.log(res.data)
+})
+```
+
+```javascript
+let db = wx.cloud.database()
+let _ = db.command
+db.collection('message').where({
+	age:_.not(_.or([_.lt(50),_.eq(100)]))//非（小于50或等于100）-->大于50且不等于100
+}).get().then((res)=>{
+	console.log(res.data)
+})
+//简化写法nor
+let db = wx.cloud.database()
+let _ = db.command
+db.collection('message').where({
+	age:_.nor([_.lt(50),_.eq(100)])//非（小于50或等于100）-->大于50且不等于100
+}).get().then((res)=>{
+	console.log(res.data)
+})
+```
+
+多个字段非
+
+```javascript
+//筛选出age不小于20 且 tags 不包含'mini'
+let db = wx.cloud.database()
+let _ = db.command
+db.collection('message').where(_.nor([{
+    age:_.lt(20)
+},{
+    tags:'mini'
+}])).get().then((res)=>{
+	conso
+```
+
+
+
+### 更新
+
+[文档：云开发>开发指引>数据库>增删改查SDK>更新](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/guide/database/update.html)
+
+改一定是在查之后，先查再改。
+
+```javascript
+// updateMessage云函数入口文件
+const cloud = require('wx-server-sdk')
+cloud.init()
+let db = cloud.database()
+// 云函数入口函数
+exports.main = async (event, context) => {
+    return new Promise((resolve,reject)=>{
+        db.collection('message').where(
+            event.condition//这样写让前端给查找条件{}
+        ).update({
+            data:event.updateData
+        }).then((res)=>{
+            resolve(res)
+        })
+    })
+}
+//调用云函数
+updateMessage(){
+    wx.cloud.callFunction({
+        name:'updateMessage',
+        data:{
+        	condition:{author:'十月'},//查询条件
+        	updateData:{content:'第一次之旅，假的假的'}//需要修改的数据
+        },
+        success(res){
+        	console.log('333',res.result)//更新返回的是stats:{updated:1}表示更新了几条数据
+        }
+    })
+}
+```
+
+除了用指定值更新字段外，数据库 API 还提供了一系列的更新指令用于执行更复杂的更新操作，更新指令可以通过 `db.command` 取得：
+
+| 更新指令 | 说明                                   |
+| -------- | -------------------------------------- |
+| set      | 设置字段为指定值                       |
+| remove   | 删除字段                               |
+| inc      | 原子自增字段值                         |
+| mul      | 原子自乘字段值                         |
+| push     | 如字段值为数组，往数组尾部增加指定值   |
+| pop      | 如字段值为数组，从数组尾部删除一个元素 |
+| shift    | 如字段值为数组，从数组头部删除一个元素 |
+| unshift  | 如字段值为数组，往数组头部增加指定值   |
+
+### 删除数据
+
+[文档：云开发>开发指引>数据库>增删改查SDK>删除数据](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/guide/database/remove.html)
+
+### 聚合
+
+[文档：云开发>开发指引>数据库>聚合](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/guide/database/aggregation/aggregation.html)
+
+关联多个集合，联合查询，根据`authList`集合的`name`去关联查询`bookShop`集合的`author`，数据命名`personalFile`。
+
+```javascript
+db.collection('authList').aggregate().lookup({
+    from:'bookShop',
+    localField:'name',
+    foreignField:'author',
+    as:'personalFile'
+}).end().then((res)=>{
+    resolve(res);
+}).catch((err)=>{
+    resolve(err);
+})
+```
+
+## 1.18 云存储
+
+[wx.chooseImage](https://developers.weixin.qq.com/miniprogram/dev/api/media/image/wx.chooseImage.html)
+
+1.上传图片示例，`wx.cloud.upliadFile()`方法，`cloudPath` 云存储路径会解析`/`创建对应目录。
+
+```javascript
+uploadFile(){
+    wx.chooseImage({
+        complete: (res) => {
+            console.log(res);
+            res.tempFilePaths.forEach((item,index)=>{
+                let type = item.replace(/.+\./,'').toLowerCase();//得到文件后缀名
+                wx.cloud.uploadFile({
+                    cloudPath:'images/'+Date.now() + type,
+                    filePath:item,
+                    success(res){
+                    	console.log('上传成功',res);//返回的数据拿到fileId
+                    }
+                })
+            })
+        },
+    })
+}
+```
+
+
+
+## 1.19 behaviors
+
+[文档：指南>自定义组件>behaviors](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/behaviors.html)
+
+`behaviors` 是用于组件间代码共享的特性，类似于Vue的“mixins”。 
+
+```javascript
+let mainBehavior = Behavior({
+    data:{
+        //数据
+    }，
+    methods:{
+        //方法
+    }
+})
+export default mainBehavior;
+```
+
+使用
+
+```javascript
+import mainBehavior from '..path';
+```
+
+```javascript
+Component({
+    behaviors:[mainBehavior],//可使用多个behavior
+})
+```
+
+
+
+### 字段的覆盖和组合规则
+
+组件和它引用的 `behavior` 中可以包含同名的字段，对这些字段的处理方法如下：
+
+- 如果有同名的属性或方法，组件本身的属性或方法会覆盖 `behavior` 中的属性或方法，如果引用了多个 `behavior` ，在定义段中靠后 `behavior` 中的属性或方法会覆盖靠前的属性或方法；
+- 如果有同名的数据字段，如果数据是对象类型，会进行对象合并，如果是非对象类型则会进行相互覆盖；
+- 生命周期函数不会相互覆盖，而是在对应触发时机被逐个调用。如果同一个 `behavior` 被一个组件多次引用，它定义的生命周期函数只会被执行一次。
+
+## 1.20 Component构造器
+
+[文档：指南>自定义组件>Component构造器](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/component.html)
+
+`Component` 构造器可用于定义组件，调用 `Component` 构造器时可以指定组件的属性、数据、方法等。 
+
