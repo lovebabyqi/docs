@@ -411,7 +411,7 @@ cd repo.git
 
 ```js
 git filter-branch --env-filter '
-OLD_EMAIL="you@example.com"
+OLD_EMAIL="“861982926@qq.com”"
 CORRECT_NAME="lovebabyqi"
 CORRECT_EMAIL="861982926@qq.com"
 if [ "$GIT_COMMITTER_EMAIL" = "$OLD_EMAIL" ]
@@ -427,6 +427,7 @@ fi
 ' --tag-name-filter cat -- --branches --tags
 ```
 
+OLD_EMAIL的双层引号写法是由于我的错误邮箱是字符串的邮箱，双层引号表示字符串
 #### 2. 检查新的git历史记录看是否有错误
 
 #### 3. 强制推送修改了的git记录到github

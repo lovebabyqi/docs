@@ -548,6 +548,38 @@ wx.cloud.callFunction({
 })
 ```
 
+### 云函数定时触发器
+
+[云函数文档：云开发>开发指引>云函数>定时触发器](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/guide/functions/triggers.html)
+
+如果云函数需要定时 / 定期执行，也就是定时触发，我们可以使用云函数定时触发器。配置了定时触发器的云函数，会在相应时间点被自动触发，函数的返回结果不会返回给调用方。
+
+在需要添加触发器的云函数目录下新建文件 `config.json`，格式如下：
+
+```json
+{
+  // triggers 字段是触发器数组，目前仅支持一个触发器，即数组只能填写一个，不可添加多个
+  "triggers": [
+    {
+      // name: 触发器的名字，规则见下方说明
+      "name": "myTrigger",
+      // type: 触发器类型，目前仅支持 timer (即 定时触发器)
+      "type": "timer",
+      // config: 触发器配置，在定时触发器下，config 格式为 cron 表达式，规则见下方说明
+      "config": "0 0 2 1 * * *"
+    }
+  ]
+}
+```
+
+config触发器触发周期，标准corn表达式
+
+| 第一位 | 第二位 | 第三位 | 第四位 | 第五位 | 第六位 | 第七位 |
+| ------ | ------ | ------ | ------ | ------ | ------ | ------ |
+| 秒     | 分钟   | 小时   | 日     | 月     | 星期   | 年     |
+
+！！！！！！配置完成记得上传触发器
+
 ## 1.17 数据库
 
 [数据库文档：云开发>开发指引>数据库](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/guide/database/add.html)
