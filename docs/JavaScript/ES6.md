@@ -911,6 +911,7 @@ console.log(m);
 //利用set结构 实现数组去重
 var arr = [1,2,2,3,3];
 var s1 = new Set(arr);
+console.log(s1);//Set(3) {1, 2, 3}
 var newArr = [...s1];//[1,2,3]
 
 //利用set结构 实现字符串去重
