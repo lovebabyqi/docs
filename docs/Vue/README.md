@@ -17,7 +17,7 @@
 - vue是不能感知数组对索引位的更改。
 - vue可以感知数组的变异方法 即可以改变原数组的。
 
-> **push pop		末位添加，删除**
+	 **push pop		末位添加，删除**
 >
 > **unshift shift		首位添加，删除**
 >
@@ -875,6 +875,8 @@ Vue.mixin({
 
 ## 13. vue-router路由
 
+[官网文档地址](https://router.vuejs.org/zh/)
+
 ### 13.1 声明式
 
 #### 13.1.1 路由表
@@ -948,6 +950,16 @@ new Vue({
 ### 13.2 编程式的导航
 
 除了使用 `<router-link>` 创建 a 标签来定义导航链接，我们还可以借助 **$router** 的实例方法，通过编写代码来实现。
+
+注意：**编程式导航如果提供了 path，params 会被忽略，取而代之的是下面例子的做法，你需要提供路由的 name 或手写完整的带有参数的 path：** 
+
+```javascript
+const userId = '123'
+router.push({ name: 'user', params: { userId }}) // -> /user/123
+router.push({ path: `/user/${userId}` }) // -> /user/123
+
+router.push({ path: '/user', params: { userId }}) // -> /user 这里的 params 不生效
+```
 
 **$router.push        会在原来的历史路径中累加**
 
@@ -1046,7 +1058,7 @@ const User = ()=>import(/* webpackChunkName: "b" */'../views/User')
 //魔法注释，打包时webpack会识别ChunkName，根据ChunkName进行分割
 ```
 
-### 13.5 跳转路由,内容高度超过视口,容易出现跳转后,scroll未在最顶部
+### 13.5 跳转路由，内容高度超过视口，容易出现跳转后，scroll未在最顶部
 
 解决方案1,视具体情况,有时是路由没变化,数据变化也希望跳转到顶部
 

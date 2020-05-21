@@ -176,6 +176,8 @@ onResize: function() {
 
 ### onPullDownRefresh 
 
+[文档：API>界面>下拉刷新>wx.startPullDownRefresh](https://developers.weixin.qq.com/miniprogram/dev/api/ui/pull-down-refresh/wx.startPullDownRefresh.html)
+
 监听用户下拉
 
 > 需要在`app.json`的[`window`](https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html#window)选项中或[页面配置](https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/page.html)中开启`enablePullDownRefresh`。
@@ -418,6 +420,8 @@ app.globalData++
 
 ### wx.navigateTo()
 
+[文档：API>路由>wx.navigateTo](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.navigateTo.html)
+
 保留当前页面，跳转到应用内的某个页面，但是不能跳到 tabbar 页面。
 
 参数：
@@ -431,6 +435,8 @@ app.globalData++
 | complete | function |        | 否   | 接口调用结束的回调函数（调用成功、失败都会执行               |
 
 ### 页面栈
+
+[文档：指南>小程序框架>页面路由](https://developers.weixin.qq.com/miniprogram/dev/framework/app-service/route.html)
 
 `wx.navigateTo()`使用两次后，页面层级有3层，这样的页面层级关系就是页面栈，页面栈最多十层。
 
@@ -461,6 +467,8 @@ tabBar:{
 当前页pageE `wx.switchTab(url:pageF)`，此时原来的页面栈会被全部清空（除了pageA）。此时的页面栈 [pageF]，此时点击 tab1 切换到 pageA ，pageA 不会触发 onLoad()，pageA没有被销毁。
 
 ### 页面通信
+
+[文档：API>路由>wx.navigateTo](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.navigateTo.html)
 
 如果一个页面由另一个页面通过 [`wx.navigateTo`](https://developers.weixin.qq.com/miniprogram/dev/api/route/wx.navigateTo.html) 打开，这两个页面间将建立一条数据通道：
 
@@ -948,3 +956,59 @@ Component({
 
 `Component` 构造器可用于定义组件，调用 `Component` 构造器时可以指定组件的属性、数据、方法等。 
 
+## 1.21 组件间通信
+
+[文档：指南>自定义组件>组件间通信与事件](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/events.html)
+
+组件间的基本通信方式有以下几种。
+
+- WXML 数据绑定：用于父组件向子组件的指定属性设置数据，仅能设置 JSON 兼容数据（自基础库版本 [2.0.9](https://developers.weixin.qq.com/miniprogram/dev/framework/compatibility.html) 开始，还可以在数据中包含函数）。具体在 [组件模板和样式](https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/wxml-wxss.html) 章节中介绍。
+- 事件：用于子组件向父组件传递数据，可以传递任意数据。
+- 如果以上两种方式不足以满足需要，父组件还可以通过 `this.selectComponent` 方法获取子组件实例对象，这样就可以直接访问组件的任意数据和方法。
+
+### 类似事件车通信
+
+1.监听事件
+
+```javascript
+<!-- 当自定义组件触发“myevent”事件时，调用“onMyEvent”方法 -->
+<component-tag-name bindmyevent="onMyEvent" />
+<!-- 或者可以写成 -->
+<component-tag-name bind:myevent="onMyEvent" />
+```
+
+```javascript
+Page({
+  onMyEvent: function(e){
+    e.detail // 自定义组件触发事件时提供的detail对象
+  }
+})
+```
+
+2.触发事件
+
+```javascript
+<!-- 在自定义组件中 -->
+<button bindtap="onTap">点击这个按钮将触发“myevent”事件</button>
+```
+
+```javascript
+Component({
+  properties: {},
+  methods: {
+    onTap: function(){
+      var myEventDetail = {} // detail对象，提供给事件监听函数
+      var myEventOption = {} // 触发事件的选项
+      this.triggerEvent('myevent', myEventDetail, myEventOption)
+    }
+  }
+})
+```
+
+触发事件的选项包括： 
+
+| 选项名       | 类型    | 是否必填 | 默认值 | 描述                                                         |
+| ------------ | ------- | -------- | ------ | ------------------------------------------------------------ |
+| bubbles      | Boolean | 否       | false  | 事件是否冒泡                                                 |
+| composed     | Boolean | 否       | false  | 事件是否可以穿越组件边界，为false时，事件将只能在引用组件的节点树上触发，不进入其他任何组件内部 |
+| capturePhase | Boolean | 否       | false  | 事件是否拥有捕获阶段                                         |

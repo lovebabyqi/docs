@@ -1006,3 +1006,91 @@ scss样式：四个小圆点，四角分布，不同透明度，旋转动画。�
 
 <img src='/docs/css/loading01.png' alt='loading01'  style='width:30%'><img src='/docs/css/loading02.png' alt='loading02'  style='width:30%'><img src='/docs/css/loading03.png' alt='loading03'  style='width:30%'>
 
+## 9.vue loading组件
+
+loading组件用于，vue axios请求数据，或异步组件加载，过渡状态时显示 loading 动画，避免给用户卡顿白屏体验，样式同 react loading 。
+
+使用时，给组件一个 loading:true 初始值，数据加载完成，设为false。根据 loading 状态 v-show 指令控制loading 显示。 
+
+<show-code>
+
+```vue
+<template>
+    <div class='loading'>
+        <div class="loading_box">
+            <span class='load1 item'/>
+            <span class='load2 item'/>
+            <span class='load3 item'/>
+            <span class='load4 item'/>
+        </div>
+    </div>
+</template>
+
+<script>
+    export default {
+        name: "Loading"
+    }
+</script>
+
+<style scoped lang="less">
+    @keyframes loading_rotate {
+        from {
+            transform: translateX(-50%) rotate(0deg);
+        }
+        to {
+            transform: translateX(-50%) rotate(360deg);
+        }
+    }
+
+    .loading {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        background-color: rgba(255, 255, 255, .2);
+        z-index: 100;
+
+        .loading_box {
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            left: 50%;
+            top: 30%;
+            animation: loading_rotate .9s linear infinite;
+
+            .item {
+                position: absolute;
+                width: 10px;
+                height: 10px;
+                display: inline-block;
+                border-radius: 50%;
+            }
+
+            .load1 {
+                top: 0;
+                left: 0;
+                background-color: rgba(24, 144, 255, .9);
+            }
+
+            .load2 {
+                top: 0;
+                right: 0;
+                background-color: rgba(24, 144, 255, .7);
+            }
+
+            .load3 {
+                bottom: 0;
+                left: 0;
+                background-color: rgba(24, 144, 255, .5);
+            }
+
+            .load4 {
+                bottom: 0;
+                right: 0;
+                background-color: rgba(24, 144, 255, .3);
+            }
+        }
+    }
+</style>
+```
+
+</show-code>

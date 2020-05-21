@@ -122,9 +122,100 @@ TCP是全双工信道，何为全双工就是客户端与服务端建立两条�
 - GET 请求只能进行 url(x-www-form-urlencoded)编码，而 POST 支持多种编码方式
 - **GET 产生一个 TCP 数据包；POST 产生两个 TCP 数据包**。对于 GET 方式的请求，浏览器会把 http 的 header 和 data 一并发送出去，服务器响应200（返回数据）。而对于 POST，浏览器先发送 header，服务器响应100 continue，浏览器再发送 data，服务器响应200 ok（返回数据）
 
-## 2. ajax原理
+## 2. HTTP
 
-### 2.1.XMLHttpRequest对象
+[文档地址](https://www.runoob.com/http/http-tutorial.html)
+
+### 2.1 HTTP 简介
+
+HTTP协议是Hyper Text Transfer Protocol（超文本传输协议）的缩写,是用于从万维网（WWW:World Wide Web ）服务器传输超文本到本地浏览器的传送协议。。
+
+HTTP是一个基于TCP/IP通信协议来传递数据（HTML 文件, 图片文件, 查询结果等）。
+
+### 2.2 HTTP 工作原理
+
+HTTP协议工作于客户端-服务端架构上。浏览器作为HTTP客户端通过URL向HTTP服务端即WEB服务器发送所有请求。
+
+Web服务器有：Apache服务器，IIS服务器（Internet Information Services）等。
+
+Web服务器根据接收到的请求后，向客户端发送响应信息。
+
+HTTP默认端口号为80，但是你也可以改为8080或者其他端口。
+
+**HTTP三点注意事项**：
+
+- **HTTP是无连接**：无连接的含义是限制每次连接只处理一个请求。服务器处理完客户的请求，并收到客户的应答后，即断开连接。采用这种方式可以节省传输时间。
+- **HTTP是媒体独立的**：这意味着，只要客户端和服务器知道如何处理的数据内容，任何类型的数据都可以通过HTTP发送。客户端以及服务器指定使用适合的**MIME-type内容类型**。
+- **HTTP是无状态**：HTTP协议是无状态协议。无状态是指协议对于事务处理没有记忆能力。缺少状态意味着如果后续处理需要前面的信息，则它必须重传，这样可能导致每次连接传送的数据量增大。另一方面，在服务器不需要先前信息时它的应答就较快。
+
+**MIME-type内容类型**：
+
+浏览器显示的内容都有 HTML、XML、GIF、Flash 等，浏览器是通过 MIME Type 区分它们，决定用什么内容什么形式来显示。
+
+MIME Type 是该资源的媒体类型，MIME Type 不是个人指定的，是经过互联网（IETF）组织协商，以 RFC（是一系列以编号排定的文件，几乎所有的互联网标准都有收录在其中） 的形式作为建议的标准发布在网上的，大多数的 Web 服务器和用户代理都会支持这个规范 (顺便说一句，Email 附件的类型也是通过 MIME Type 指定的)。
+
+媒体类型通常通过 HTTP 协议，由 Web 服务器告知浏览器的，更准确地说，是**通过 Content-Type 来表示**的。例如：Content-Type：text/HTML。
+
+通常只有一些卓哉互联网上获得广泛应用的格式才会获得一个 MIME Type，如果是某个客户端自己定义的格式，一般只能以 application/x- 开头。
+
+### 2.3 HTTP请求方法
+
+HTTP1.0 定义了三种请求方法： GET, POST 和 HEAD方法。
+
+HTTP1.1 新增了六种请求方法：OPTIONS、PUT、PATCH、DELETE、TRACE 和 CONNECT 方法。
+
+| 方法     | 描述                                                         |
+| -------- | ------------------------------------------------------------ |
+| **GET**  | 请求指定的页面信息，并返回实体主体。                         |
+| HEAD     | 类似于 GET 请求，只不过返回的响应中没有具体的内容，用于获取报头 |
+| **POST** | 向指定资源提交数据进行处理请求（例如提交表单或者上传文件）。数据被包含在请求体中。POST 请求可能会导致新的资源的建立和/或已有资源的修改。 |
+| PUT      | 从客户端向服务器传送的数据取代指定的文档的内容。             |
+| DELETE   | 请求服务器删除指定的页面。                                   |
+| CONNECT  | HTTP/1.1 协议中预留给能够将连接改为管道方式的代理服务器。    |
+| OPTIONS  | 允许客户端查看服务器的性能。                                 |
+| TRACE    | 回显服务器收到的请求，主要用于测试或诊断。                   |
+| PATCH    | 是对 PUT 方法的补充，用来对已知资源进行局部更新 。           |
+
+### 2.4 HTTP content-type
+
+Content-Type（内容类型），一般是指网页中存在的 Content-Type，用于定义网络文件的类型和网页的编码，决定浏览器将以什么形式、什么编码读取这个文件，这就是经常看到一些 PHP 网页点击的结果却是下载一个文件或一张图片的原因。
+
+Content-Type 标头告诉客户端实际返回的内容的内容类型。
+
+语法格式：
+
+```javascript
+Content-Type: text/html; charset=utf-8
+Content-Type: multipart/form-data; boundary=something
+```
+
+常见格式，上传文件时
+
+- multipart/form-data ： 需要在表单中进行文件上传时，就需要使用该格式 
+
+其他格式
+
+- text/html ： HTML格式
+- text/plain ：纯文本格式
+- text/xml ： XML格式
+- image/gif ：gif图片格式
+- image/jpeg ：jpg图片格式
+- image/png：png图片格式
+
+以application开头的媒体格式类型：
+
+- application/xhtml+xml ：XHTML格式
+- application/xml： XML数据格式
+- application/atom+xml ：Atom XML聚合格式
+- application/json： JSON数据格式
+- application/pdf：pdf格式
+- application/msword ： Word文档格式
+- application/octet-stream ： 二进制流数据（如常见的文件下载）
+- application/x-www-form-urlencoded ： <form encType=””>中默认的encType，form表单数据被编码为key/value格式发送到服务器（表单默认的提交数据的格式）
+
+## 3. ajax原理
+
+### 3.1.XMLHttpRequest对象
 
 我们常用的 ajax 就是通过 XMLHttpRequest 对象实现的，这个对象有很多的属性和事件，在使用之前，我们需要先将它实例化 。
 
@@ -132,9 +223,9 @@ TCP是全双工信道，何为全双工就是客户端与服务端建立两条�
 const xhr = new XMLHttpRequest();
 ```
 
-### 2.2 实例化后，我们就可以通过 xhr 来发起一个请求
+### 3.2 实例化后，我们就可以通过 xhr 来发起一个请求
 
-#### 2.2.1 xhr.open()
+#### 3.2.1 xhr.open()
 
 xhr 具有一个 open 方法，这个方法的作用类似于初始化，并不会发起真正的请求。
 
@@ -150,7 +241,7 @@ open 方法具有 5 个参数，但是常用的是前 3 个
 
 **async：是否异步请求，默认为 true（异步）**
 
-#### 2.2.2 xhr.send()
+#### 3.2.2 xhr.send()
 
 ```javascript
 xhr.send(data)
@@ -178,7 +269,7 @@ send 方法发送请求，并接受一个可选参数
 
 **timeout**： 设置请求超时时间
 
-#### 2.2.3 xhr.onreadystatechange()
+#### 3.2.3 xhr.onreadystatechange()
 
 readyStatus的值会随着请求各阶段的变化而改变，其一共有 5 个值：
 
@@ -208,7 +299,7 @@ xhr.onreadystatechange = () => {
 }
 ```
 
-#### 2.2.4 当网络不佳时，我们需要给请求设置一个超时时间
+#### 3.2.4 当网络不佳时，我们需要给请求设置一个超时时间
 
 ```javascript
 // 超时时间单位为毫秒
@@ -217,7 +308,7 @@ xhr.timeout = 1000;
 xhr.ontimeout = () => console.log('请求超时');
 ```
 
-### 2.3 封装ajax
+### 3.3 封装ajax
 
 ```javascript
 function ajax (options) {
@@ -287,7 +378,7 @@ ajax({
 )
 ```
 
-### 2.4 简化封装
+### 3.4 简化封装
 
 ```javascript
 function jsonUrl(obj){	//处理get参数
@@ -347,18 +438,98 @@ ajax({
 })
 ```
 
-## 3. axios二次封装
+## 4. axios
 
 [axios官方文档地址。](http://www.axios-js.com/)
 
 [axios简书文档。](https://www.jianshu.com/p/7a9fbcbb1114)
 
-### 	统一get和post的请求格式。
+### 配置优先级
+
+配置项通过一定的规则合并，`request config` > `instance.defaults` > `系统默认`，优先级高的覆盖优先级低的。 
+
+```javascript
+// 创建一个实例，这时的超时时间为系统默认的 0
+var instance = axios.create();
+
+// 通过instance.defaults重新设置超时时间为2.5s，因为优先级比系统默认高
+instance.defaults.timeout = 2500;
+
+// 通过request config重新设置超时时间为5s，因为优先级比instance.defaults和系统默认都高
+instance.get('/longRequest', {
+	timeout: 5000
+});
+```
+
+### 4.1 axios拦截器 
+
+首先，拦截的目的作用可能是登录状态校验，设置统一请求格式，统一响应头
+
+```javascript
+import axios from 'axios'  //引入axios
+//下面这两个不一定需要引入，看你项目需要拦截的时候做什么操作，但是一般都需要引入store
+import router from '@/router'  //引入router
+```
+
+创建一个axios实例
+
+```javascript
+let instance = axios.create({
+    headers: {
+    	'content-type': 'application/x-www-form-urlencoded'
+    },
+    timeout:5000
+})
+```
+
+请求拦截
+
+每次请求判断token
+
+```javascript
+// http request 拦截器
+axios.interceptors.request.use(
+    config => {
+        //do something
+    	const token = sessionStorage.getItem('token');
+    	if(token){ // 判断是否存在token，如果存在的话，则每个http header都加上token
+    		config.headers.authorization = token  //请求头加上token
+        }else{
+            router.replace({path:'/login'})
+        }
+    	return config
+    },
+    err => {
+   		return Promise.reject(err)
+	}
+)
+```
+
+响应拦截
+
+```javascript
+axios.interceptors.response.use(
+    response=>{
+    	// do something with response data
+    	return response;
+    },
+    error=>{
+    	// do something with response error
+    	return Promise.reject(error);
+    }
+);
+```
+
+
+
+### 	4.2 统一get和post的请求格式。
 
 ```javascript
 import axios from 'axios'
+//设置axios超时时间
+axios.defaults.timeout = 5000;
 //设置axios响应数据的统一格式
-axios.interceptors.response.use(res=>res.data)
+axios.interceptors.response.use(res=>res.data);
 
 //暴露一个名字是axios的函数
 export default function request(url, data = {}, method = 'get') {
@@ -366,19 +537,21 @@ export default function request(url, data = {}, method = 'get') {
     //data 请求时发送的数据
     //method 请求的方式
     return new Promise(resolve=>{
-        let p = null
+        let p = null;
         if (method === 'get') { //如果请求是get方式
             p = axios.get(url, {
                 params:data
-            })
+            });
         } else {
-            p = axios.post(url, data)
-        }
+            p = axios.post(url, data);
+        };
         p.then(res=>{
-            resolve(res)
+            resolve(res);
+        });
+        p.catch(err=>{
+            console.log(err);
         })
     })
-
 }
 ```
 
@@ -390,9 +563,9 @@ import request from './request'
 //暴露请求的接口函数供组件使用
 export const reqLogin = (userInfo)=>request('/login',userInfo,'post')
 ```
-## 4. jsonp
+## 5. jsonp
 
-### 4.1 jsonp概念
+### 5.1 jsonp概念
 
 **JSONP是JSON with padding(填充式JSON或参数式JSON)的简写，是应用JSON的一种新方法，常用于服务器与客户端跨源通信** 。
 
@@ -412,7 +585,7 @@ JSONP的产生
 
 7、为了便于客户端使用数据，逐渐形成了一种非正式传输协议，人们把它称作JSONP，该协议的一个要点就是允许用户传递一个callback参数给服务端，然后服务端返回数据时会将这个callback参数作为函数名来包裹住JSON数据，这样客户端就可以随意定制自己的函数来自动处理返回数据了。
 
-### 4.2 jsonp包
+### 5.2 jsonp包
 
 npm提供了jsonp包
 
@@ -447,7 +620,7 @@ jsonp(url,options,fn);
 
 jsonp返回一个函数，该函数在被调用时将取消正在进行的jsonp请求(fn不会被调用)。
 
-### 4.3 jsonp使用示例
+### 5.3 jsonp使用示例
 
 要请求一个天气接口,获取天气信息
 
@@ -467,9 +640,9 @@ export const reqWeather = ()=>{
 }
 ```
 
-## 5. nginx基本使用及概念
+## 6. nginx基本使用及概念
 
-### 5.1 webStorm链接
+### 6.1 webStorm链接
 
 链接服务器, 在服务器上面操作
 
@@ -486,7 +659,7 @@ export const reqWeather = ()=>{
    1. ls 显示当前文件夹的内容 -a
    2. cd 进入某个文件夹 ../ 上级文件夹 ./ 当前文件夹 / 根目录 clear
 
-### 5.2 nginx基本的安装及配置
+### 6.2 nginx基本的安装及配置
 
 1. apt-get (ubuntu) yum(centOS) 快速下载安装某些东西
 
@@ -535,7 +708,7 @@ server {
 }
 ```
 
-### 5.3 nginx反向代理
+### 6.3 nginx反向代理
 
 nginx 重启(启动) service nginx restart
 
@@ -562,7 +735,7 @@ server {
 }
 ```
 
-### 5.4 nginx负载均衡(分发)
+### 6.4 nginx负载均衡(分发)
 
 ```nginx
 # 转发器
@@ -599,9 +772,9 @@ server {
 
    mongod --dbpath .. --logpath .. --fork #fork常驻启动
 
-### 5.5 nginx代理多个项目(通过二级域名访问)
+### 6.5 nginx代理多个项目(通过二级域名访问)
 
-#### 5.5.1 前后台代码整合
+#### 6.5.1 前后台代码整合
 
 **1.打包前台代码，存放到后台的public目录下，后台配置了static静态资源访问，**
 
@@ -624,7 +797,7 @@ app.use(cxt=>{
 
 这样就能解决整合上线后刷新404问题
 
-#### 5.5.2 Nginx 同一个端口代理多个项目,通过二级域名访问服务器不同本地端口
+#### 6.5.2 Nginx 同一个端口代理多个项目,通过二级域名访问服务器不同本地端口
 
 ##### 1.首先到服务器添加解析记录设置好二级域名解析
 
