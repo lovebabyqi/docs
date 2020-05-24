@@ -47,6 +47,7 @@ module.exports = {
 
             ],
             '/css/': [
+                'css选择器',
                 'html',
                 'H5',
                 '',
