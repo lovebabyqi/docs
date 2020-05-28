@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>js控制流 | 十月</title>
+    <meta name="generator" content="VuePress 1.4.1">
+    <link rel="icon" href="/docs/images/7.png">
+    <meta name="description" content="vuepress博客">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="full-screen" content="true">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="360-fullscreen" content="true">
+    <link rel="preload" href="/docs/assets/css/0.styles.1ad37322.css" as="style"><link rel="preload" href="/docs/assets/js/app.ca99be60.js" as="script"><link rel="preload" href="/docs/assets/js/2.f90869d3.js" as="script"><link rel="preload" href="/docs/assets/js/16.77c2d47d.js" as="script"><link rel="prefetch" href="/docs/assets/js/10.4e260648.js"><link rel="prefetch" href="/docs/assets/js/11.c7faf0dc.js"><link rel="prefetch" href="/docs/assets/js/12.4d2c3fa3.js"><link rel="prefetch" href="/docs/assets/js/13.0bca2749.js"><link rel="prefetch" href="/docs/assets/js/14.dd92793f.js"><link rel="prefetch" href="/docs/assets/js/15.eeac8df6.js"><link rel="prefetch" href="/docs/assets/js/17.6c52002a.js"><link rel="prefetch" href="/docs/assets/js/18.c007769d.js"><link rel="prefetch" href="/docs/assets/js/19.5b702adb.js"><link rel="prefetch" href="/docs/assets/js/20.8b01c1c8.js"><link rel="prefetch" href="/docs/assets/js/21.f30b63cd.js"><link rel="prefetch" href="/docs/assets/js/22.9270e206.js"><link rel="prefetch" href="/docs/assets/js/23.ea1e1991.js"><link rel="prefetch" href="/docs/assets/js/24.5f38cba3.js"><link rel="prefetch" href="/docs/assets/js/25.6c2aa877.js"><link rel="prefetch" href="/docs/assets/js/26.7f92cc24.js"><link rel="prefetch" href="/docs/assets/js/27.cc2178c9.js"><link rel="prefetch" href="/docs/assets/js/28.0ee493cf.js"><link rel="prefetch" href="/docs/assets/js/29.338f737e.js"><link rel="prefetch" href="/docs/assets/js/3.edb5e83a.js"><link rel="prefetch" href="/docs/assets/js/30.4fb62da0.js"><link rel="prefetch" href="/docs/assets/js/31.a6505a92.js"><link rel="prefetch" href="/docs/assets/js/32.98248ad6.js"><link rel="prefetch" href="/docs/assets/js/33.7257a28d.js"><link rel="prefetch" href="/docs/assets/js/34.64629f75.js"><link rel="prefetch" href="/docs/assets/js/35.e7242380.js"><link rel="prefetch" href="/docs/assets/js/36.3bc1c98b.js"><link rel="prefetch" href="/docs/assets/js/37.912b0fe3.js"><link rel="prefetch" href="/docs/assets/js/38.c532bc23.js"><link rel="prefetch" href="/docs/assets/js/4.af1ff500.js"><link rel="prefetch" href="/docs/assets/js/5.dc2b2112.js"><link rel="prefetch" href="/docs/assets/js/6.0e82c544.js"><link rel="prefetch" href="/docs/assets/js/7.30be3a2a.js"><link rel="prefetch" href="/docs/assets/js/8.d653075e.js"><link rel="prefetch" href="/docs/assets/js/9.4e806e1c.js">
+    <link rel="stylesheet" href="/docs/assets/css/0.styles.1ad37322.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/docs/" class="home-link router-link-active"><img src="/docs/images/7.png" alt="十月" class="logo"> <span class="site-name can-hide">十月</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/docs/blog/" class="nav-link">
+  技术博客
+</a></div><div class="nav-item"><a href="/docs/JavaScript/" class="nav-link router-link-active">
+  Js
+</a></div><div class="nav-item"><a href="/docs/css/" class="nav-link">
+  html+css
+</a></div><div class="nav-item"><a href="/docs/Vue/" class="nav-link">
+  Vue
+</a></div><div class="nav-item"><a href="/docs/React/" class="nav-link">
+  React
+</a></div><div class="nav-item"><a href="/docs/node/" class="nav-link">
+  node
+</a></div><div class="nav-item"><a href="/docs/wx/" class="nav-link">
+  wx
+</a></div><div class="nav-item"><a href="/docs/http/" class="nav-link">
+  网络
+</a></div><div class="nav-item"><a href="/docs/myComponents/" class="nav-link">
+  封装组件
+</a></div><div class="nav-item"><a href="/docs/utils/" class="nav-link">
+  工具
+</a></div><div class="nav-item"><a href="https://github.com/lovebabyqi/Components" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  github
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/docs/blog/" class="nav-link">
+  技术博客
+</a></div><div class="nav-item"><a href="/docs/JavaScript/" class="nav-link router-link-active">
+  Js
+</a></div><div class="nav-item"><a href="/docs/css/" class="nav-link">
+  html+css
+</a></div><div class="nav-item"><a href="/docs/Vue/" class="nav-link">
+  Vue
+</a></div><div class="nav-item"><a href="/docs/React/" class="nav-link">
+  React
+</a></div><div class="nav-item"><a href="/docs/node/" class="nav-link">
+  node
+</a></div><div class="nav-item"><a href="/docs/wx/" class="nav-link">
+  wx
+</a></div><div class="nav-item"><a href="/docs/http/" class="nav-link">
+  网络
+</a></div><div class="nav-item"><a href="/docs/myComponents/" class="nav-link">
+  封装组件
+</a></div><div class="nav-item"><a href="/docs/utils/" class="nav-link">
+  工具
+</a></div><div class="nav-item"><a href="https://github.com/lovebabyqi/Components" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  github
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav>  <ul class="sidebar-links"><li><a href="/docs/JavaScript/" class="sidebar-link">1. 初识JavaScript</a></li><li><a href="/docs/JavaScript/js数据.html" class="sidebar-link">JavaScript数据</a></li><li><a href="/docs/JavaScript/js多种变量声明方式.html" class="sidebar-link">多种变量声明方式</a></li><li><a href="/docs/JavaScript/js控制流.html" class="active sidebar-link">js控制流</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/docs/JavaScript/js控制流.html#js控制流" class="sidebar-link">js控制流</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/docs/JavaScript/js控制流.html#_1-for循环" class="sidebar-link">1. for循环</a></li><li class="sidebar-sub-header"><a href="/docs/JavaScript/js控制流.html#_2-双层for循环" class="sidebar-link">2. 双层for循环</a></li><li class="sidebar-sub-header"><a href="/docs/JavaScript/js控制流.html#_3-if-else条件" class="sidebar-link">3. if else条件</a></li><li class="sidebar-sub-header"><a href="/docs/JavaScript/js控制流.html#_4-switch条件" class="sidebar-link">4. switch条件</a></li><li class="sidebar-sub-header"><a href="/docs/JavaScript/js控制流.html#_5-三目运算符" class="sidebar-link">5. 三目运算符</a></li><li class="sidebar-sub-header"><a href="/docs/JavaScript/js控制流.html#_6-continue-break" class="sidebar-link">6. continue break</a></li><li class="sidebar-sub-header"><a href="/docs/JavaScript/js控制流.html#_7-while-do-while" class="sidebar-link">7. while do while</a></li></ul></li></ul></li><li><a href="/docs/JavaScript/js函数.html" class="sidebar-link">js函数</a></li><li><a href="/docs/JavaScript/js面向对象.html" class="sidebar-link">js面向对象</a></li><li><a href="/docs/JavaScript/ES6.html" class="sidebar-link">ES5之后统称ES6</a></li><li><a href="/docs/JavaScript/js内置对象MathDate.html" class="sidebar-link">js内置对象</a></li><li><a href="/docs/JavaScript/js正则表达式.html" class="sidebar-link">正则表达式</a></li><li><a href="/docs/JavaScript/js综合.html" class="sidebar-link">js综合</a></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h2 id="js控制流"><a href="#js控制流" class="header-anchor">#</a> js控制流</h2> <h3 id="_1-for循环"><a href="#_1-for循环" class="header-anchor">#</a> 1. for循环</h3> <p><strong>for循环  可以让在for循环中的代码重复执行</strong></p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">var</span> i<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>i<span class="token operator">&lt;</span><span class="token number">10</span><span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>i<span class="token operator">==</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">continue</span><span class="token punctuation">;</span>
+        <span class="token comment">// break;</span>
+    <span class="token punctuation">}</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">for</span><span class="token punctuation">(</span>循环起点<span class="token punctuation">;</span>循环条件<span class="token punctuation">;</span>累加器<span class="token punctuation">)</span><span class="token punctuation">{</span>
+	循环体（重复执行的代码）
+<span class="token punctuation">}</span>
+<span class="token number">1.</span> 循环起点
+<span class="token number">2.</span> 循环条件
+<span class="token number">3.</span> 执行循环体
+<span class="token number">4.</span> 执行累加器
+</code></pre></div><h4 id="continue"><a href="#continue" class="header-anchor">#</a> <strong>continue</strong></h4> <p>1.跳过本次（1次）for循环
+2.不执行continue下面的代码</p> <h4 id="break"><a href="#break" class="header-anchor">#</a> <strong>break</strong></h4> <p>1.跳过所有的for循环
+2.不执行break下面的代码</p> <h3 id="_2-双层for循环"><a href="#_2-双层for循环" class="header-anchor">#</a> 2. 双层for循环</h3> <p>需要注意多层for循环的优化，取值效率问题，和内外层循环圈数问题。</p> <p>示例1</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">var</span> i<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>i<span class="token operator">&lt;</span><span class="token number">5</span><span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+	<span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">var</span> j<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>j<span class="token operator">&lt;</span><span class="token number">6</span><span class="token punctuation">;</span>j<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>示例2</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">var</span> j<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>j<span class="token operator">&lt;</span><span class="token number">10</span><span class="token punctuation">;</span>j<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+	<span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">var</span> i<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>i<span class="token operator">&lt;</span><span class="token number">8</span><span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+		document<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span><span class="token string">'●'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+	document<span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span><span class="token string">'&lt;br&gt;'</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">//document.write(字符串)</span>
+<span class="token comment">//这个函数可以把字符串解析成标签</span>
+</code></pre></div><h3 id="_3-if-else条件"><a href="#_3-if-else条件" class="header-anchor">#</a> 3. if else条件</h3> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">if</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+	console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'条件是真 我走进来了'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+	console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'条件是假 我走进来了'</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="_4-switch条件"><a href="#_4-switch条件" class="header-anchor">#</a> 4. switch条件</h3> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">switch</span><span class="token punctuation">(</span> 变量 <span class="token punctuation">)</span><span class="token punctuation">{</span>
+	<span class="token keyword">case</span> 数据<span class="token number">1</span><span class="token operator">:</span>
+		条件成立<span class="token punctuation">,</span>执行的<span class="token constant">JS</span>代码<span class="token punctuation">;</span>
+		<span class="token keyword">break</span><span class="token punctuation">;</span>
+	<span class="token keyword">case</span> 数据<span class="token number">2</span><span class="token operator">:</span>
+		条件成立<span class="token punctuation">,</span>执行的<span class="token constant">JS</span>代码<span class="token punctuation">;</span>
+		<span class="token keyword">break</span><span class="token punctuation">;</span>
+	<span class="token keyword">case</span> 数据<span class="token number">3</span><span class="token operator">:</span>
+		条件成立<span class="token punctuation">,</span>执行的<span class="token constant">JS</span>代码<span class="token punctuation">;</span>
+		<span class="token keyword">break</span><span class="token punctuation">;</span>
+	<span class="token keyword">default</span><span class="token operator">:</span>
+		上述条件不成立<span class="token punctuation">,</span>执行的<span class="token constant">JS</span>代码
+<span class="token punctuation">}</span>
+<span class="token comment">//变量和 数据  在判断时  是全等 ===</span>
+<span class="token comment">//break 在switch中的作用是 让程序终止</span>
+</code></pre></div><p>switch条件判断,<strong>由于变量和数据在判断时是全等===判断</strong>,因此,变量直接为true,当条件为true就能走进case,(可以是大于小于等或其他条件)</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">switch</span><span class="token punctuation">(</span> <span class="token boolean">true</span> <span class="token punctuation">)</span><span class="token punctuation">{</span>
+	<span class="token keyword">case</span> 条件<span class="token number">1</span><span class="token operator">:</span>	
+		条件成立<span class="token punctuation">,</span>执行的<span class="token constant">JS</span>代码<span class="token punctuation">;</span>
+		<span class="token keyword">break</span><span class="token punctuation">;</span>
+	<span class="token keyword">case</span> 条件<span class="token number">2</span><span class="token operator">:</span>
+		条件成立<span class="token punctuation">,</span>执行的<span class="token constant">JS</span>代码<span class="token punctuation">;</span>
+		<span class="token keyword">break</span><span class="token punctuation">;</span>
+	<span class="token keyword">case</span> 条件<span class="token number">3</span><span class="token operator">:</span>
+		条件成立<span class="token punctuation">,</span>执行的<span class="token constant">JS</span>代码<span class="token punctuation">;</span>
+		<span class="token keyword">break</span><span class="token punctuation">;</span>
+	<span class="token keyword">default</span><span class="token operator">:</span>
+		上述条件不成立<span class="token punctuation">,</span>执行的<span class="token constant">JS</span>代码
+<span class="token punctuation">}</span>
+<span class="token comment">//变量和 数据  在判断时  是全等 ===</span>
+<span class="token comment">//break 在switch中的作用是 让程序终止</span>
+</code></pre></div><h3 id="_5-三目运算符"><a href="#_5-三目运算符" class="header-anchor">#</a> 5. 三目运算符</h3> <p><strong>条件?条件为真执行的JS代码:条件为假执行的JS代码;</strong></p> <p>三目运算符 是简化 if else语句</p> <p>条件?条件为真 执行的JS代码:条件为假 执行的JS代码;</p> <h3 id="_6-continue-break"><a href="#_6-continue-break" class="header-anchor">#</a> 6. continue break</h3> <h3 id="_7-while-do-while"><a href="#_7-while-do-while" class="header-anchor">#</a> 7. while do while</h3> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">var</span> i<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token keyword">while</span><span class="token punctuation">(</span>i<span class="token operator">&lt;</span><span class="token number">6</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    i<span class="token operator">++</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token comment">//for循环的变种写法</span>
+循环起点；
+<span class="token keyword">while</span><span class="token punctuation">(</span>循环条件<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    循环体（重复执行的代码）
+    累加器；
+<span class="token punctuation">}</span>
+</code></pre></div></div> <footer class="page-edit"><!----> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">2020-5-15 0:34:44</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/docs/JavaScript/js多种变量声明方式.html" class="prev">
+        多种变量声明方式
+      </a></span> <span class="next"><a href="/docs/JavaScript/js函数.html">
+        js函数
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/docs/assets/js/app.ca99be60.js" defer></script><script src="/docs/assets/js/2.f90869d3.js" defer></script><script src="/docs/assets/js/16.77c2d47d.js" defer></script>
+  </body>
+</html>

@@ -353,7 +353,7 @@ input:focus {
 
 #### 4.2.1 额外标签法，
 
-```htnl
+```html
 <div style="clear:both;"></div>
 ```
 
@@ -1614,3 +1614,141 @@ box-shadow: h-shadow v-shadow blur spread color inset;
 </show-code>
 
 <img src='/docs/css/box-shadow.png' alt='box-shadow.png' >
+
+## 13. css中单位em和rem的区别
+
+在css中单位长度用的最多的是px、em、rem，这三个的区别是：
+
+　　**px是固定的像素，一旦设置了就无法因为适应页面大小而改变。**
+
+ em和rem相对于px更具有灵活性，他们是相对长度单位，意思是长度不是定死了的，更适用于响应式布局。
+
+对于em和rem的区别一句话概括：**em相对于父元素，rem相对于根元素。**
+
+**rem中的r意思是root（根源）**，这也就不难理解了。
+
+### 1. em
+
+**子元素字体大小**的em是相对于**父元素字体大小** **元素的**width/height/padding/margin用em的话是**相对于该元素的font-size**
+
+示例
+
+```html
+<div>
+    我是父元素div
+    <p>
+        我是子元素p
+        <span>我是孙元素span</span>
+    </p>
+</div>
+```
+
+```css
+div {
+  font-size: 40px;
+  width: 10em; /* 400px */
+  height: 10em;
+  border: solid 1px black;
+}
+p {
+  font-size: 0.5em; /* 20px */ 
+  width: 10em; /* 200px */
+  height: 10em;
+  border: solid 1px red;
+}
+span {
+  font-size: 0.5em;  /* 理论上是10px */
+  width: 10em;/* 理论上是100px */
+  height: 10em;/* 理论上是100px */
+  border: solid 1px blue;
+  display: block;
+}
+```
+
+span的font-size理论上是10px,
+
+但是在chrome上是12px;chrome设置的最小字体为12px,低于12px会被默认12px;
+
+### 2. rem
+
+rem是全部的长度都相对于根元素，根元素是谁？html元素。通常做法是给html元素设置一个字体大小，然后其他元素的长度单位就为rem。
+
+上示例：（html代码如上，只是把css代码的元素长度单位变了）
+
+```css
+html {
+    font-size: 10px;
+    }
+div {
+    font-size: 4rem; /* 40px */
+    width: 30rem;  /* 300px */
+    height: 30rem;
+    border: solid 1px black;
+}
+p {
+    font-size: 2rem; /* 20px */
+    width: 15rem; /* 150px */
+    height: 15rem;
+    border: solid 1px red;
+}
+span {
+    font-size: 1.5rem; /* 15px */
+    width: 10rem; /* 100px */
+    height: 10rem;
+    border: solid 1px blue;
+    display: block;
+} 
+```
+
+**当用rem做响应式时，直接在媒体中改变html的font-size那么用rem作为单位的元素的大小都会相应改变，很方便。**
+
+## 14. 动态设置html.fontSize，实现rem响应式
+
+```javascript
+(function(doc, win) {
+    var docEl = doc.documentElement,
+        resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+        recalc = function() {
+            var clientWidth = docEl.clientWidth;
+            if(!clientWidth) return;
+            if(clientWidth>=1920){
+                docEl.style.fontSize = 100 * (clientWidth / 1920) + 'px';
+            }else if(clientWidth>=1680){
+                docEl.style.fontSize = 100 * (clientWidth / 1680) + 'px';
+            }else if(clientWidth>=1440){
+                docEl.style.fontSize = 100 * (clientWidth / 1440) + 'px';
+            }else if(clientWidth>=1280){
+                docEl.style.fontSize = 100 * (clientWidth / 1280) + 'px';
+            }
+            else if(clientWidth>=960){
+                docEl.style.fontSize = 100 * (clientWidth / 960) + 'px';
+            }else{
+                docEl.style.fontSize = 100 * (clientWidth / 750) +'px';
+            }
+        };
+        
+    if(!doc.addEventListener) return;
+    win.addEventListener(resizeEvt, recalc, false);//设备尺寸变化，立即触发，可以用防抖函数优化
+    doc.addEventListener('DOMContentLoaded', recalc, false);
+})(document, window);
+```
+
+## 15. meta标签控制viewport
+
+移动设备默认的viewport是layout viewport，也就是那个比屏幕要宽的viewport，但在进行移动设备网站的开发时，我们需要的是ideal viewport。那么怎么才能得到ideal viewport呢？这就该轮到meta标签出场了。
+
+我们在开发移动设备的网站时，最常见的的一个动作就是把下面这个东西复制到我们的head标签中：
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+```
+
+苹果的规范中，meta viewport 有6个属性(暂且把content中的那些东西称为一个个属性和值)，如下： 
+
+| width         | 设置layout viewport  的宽度，为一个正整数，或字符串"width-device" |
+| ------------- | ------------------------------------------------------------ |
+| initial-scale | 设置页面的初始缩放值，为一个数字，可以带小数                 |
+| minimum-scale | 允许用户的最小缩放值，为一个数字，可以带小数                 |
+| maximum-scale | 允许用户的最大缩放值，为一个数字，可以带小数                 |
+| height        | 设置 **layout viewport**  的高度，这个属性对我们并不重要，很少使用 |
+| user-scalable | 是否允许用户进行缩放，值为"no"或"yes", no 代表不允许，yes代表允许 |

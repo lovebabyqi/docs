@@ -1774,7 +1774,7 @@ setInterval(function, N)
 //即：每隔N秒把function事件推到消息队列中
 ```
 
-<img src="E:/Webstorm/github/github%E5%8D%9A%E5%AE%A2/blog/docs/blog/docs/images/setinterval.png" alt='定时器'>
+<img src="/docs/images/setinterval.png" alt='定时器'>
 
 上图可见，setInterval每隔100ms往队列中添加一个事件；100ms后，添加T1定时器代码至队列中，主线程中还有任务在执行，所以等待，some event执行结束后执行T1定时器代码；又过了100ms，T2定时器被添加到队列中，主线程还在执行T1代码，所以等待；又过了100ms，理论上又要往队列里推一个定时器代码，**但由于此时T2还在队列中，所以T3不会被添加，结果就是此时被跳过**；这里我们可以看到，**T1定时器执行结束后马上执行了T2代码**，所以并没有达到定时器的效果。
 
