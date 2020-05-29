@@ -869,3 +869,172 @@ service nginx start  //开启nginx服务
 去访问二级域名 nec.baidu.com 指向网易云api项目
 
 ra.baidu.com 指向react项目
+
+## 7. websocket
+
+即时通讯，长连接（socket），短连接（ajax）
+
+1.会员到期提醒。
+
+2.站内信。
+
+3.中奖。
+
+4.蜡烛图，数据图实时更新。
+
+什么时候用长连接，分析时间换空间，空间换时间，兼容性。
+
+如果用ajax，兼容性好，但是前后端都有压力，耗费资源。
+
+用socket 长连接只需要保持状态，后端数据变更后会发送到前端，比轮询效率高，不受跨域限制。
+
+### 7.1 实现socket的三种方式
+
+1.`.net`
+
+2.`socket.io`，麻烦，兼容性最好。
+
+3.`websocket`，h5新增，低版本浏览器不兼容，使用方式简单。
+
+### `websocket`实例
+
+服务端
+
+```javascript
+const WebSocket = require('ws')
+const ws = new WebSocket.Server({port:3006},()=>{//开启服务
+    console.log('socket start');
+})
+let commentList = [];
+ws.on('connection',(client)=>{//得到client对象
+    client.on('message',(commentInfo)=>{//on方法监听客户端发送过来的数据
+        commentList.push(JSON.parse(commentInfo));
+        client.send(JSON.stringify(commentList))//send方法发送数据
+        console.log('来自前端的数据',commentInfo)
+    });
+    client.on('close',(msg)=>{
+        console.log('前端主动断开了连接',msg);//监听前端关闭
+    });
+})
+```
+
+前端：vue聊天室为例
+
+<show-code>
+
+```javascript
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+    <title>socket聊天室</title>
+    <link rel="stylesheet" href="./index.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.11/vue.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <header>socket聊天室</header>
+        <div class="container">
+            <p class='comment' v-for='item in commentList' :key='item'> {{item.comment}}<span>{{item.time}}</span></p>
+        </div>
+        <footer>
+            <input type="text" v-model='comment' @keyup.enter='send'>
+            <button type="button" @click='send'>发送</button>
+        </footer>
+    </div>
+    <script>
+        let vm = new Vue({
+            el: '#app',
+            data: {
+                comment:'',//存储input聊天内容
+                commentList: [],//存储聊天记录
+                ws: {},//存储ws对象
+            },
+            mounted() {
+                this.ws = new WebSocket('ws://localhost:3006');//连接ws协议通信
+                this.ws.onopen = this.open;
+                this.ws.onclose = this.close;
+                this.ws.onmessage = this.listen;
+            },
+            methods: {
+                listen(res){//监听通信数据
+                    this.commentList = JSON.parse(res.data)||[];
+                    console.log(JSON.parse(res.data),this.commentList)
+                    console.log('服务端发送过来的数据', res);
+                },
+                open() {
+                    console.log('服务已连接');
+                },
+                close(){
+                    console.log('服务关闭');
+                },
+                send(){
+                    let commentInfo = {
+                        comment:this.comment,
+                        time:(new Date()).toLocaleTimeString('chinese',{hour12:false})
+                    }
+                    this.ws.send(JSON.stringify(commentInfo));
+                    this.comment = '';
+                }
+                
+            }
+        })
+    </script>
+</body>
+</html>
+```
+
+样式css
+
+```css
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing:border-box;
+}
+#app{
+    width:100vw;
+    height:100vh;
+}
+header{
+    height:40px;
+    width:100vw;
+    text-align:center;
+    line-height:40px;
+    background-color: rgba(80,250,155,0.7);
+}
+.container{
+    background-color: #ddd;
+    width:100vw;
+    height:calc(100vh - 100px);
+    overflow-y: scroll;
+}
+.container .comment{
+    height:2em;
+}
+.container .comment span{
+    font-size:12px;
+    transform:scale(.2);
+}
+footer{
+    display:flex;
+    position:fixed;
+    bottom:0;
+    width:100vw;
+    height:60px;
+}
+footer input[type=text]{
+    flex:1;
+    padding:5px 11px;
+    outline:none;
+}
+footer input[type=text]:focus{
+    border-color:rgba(0,100,100,.7)
+}
+footer button{
+    padding: 5px 11px;
+}
+```
+
+</show-code>

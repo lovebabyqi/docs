@@ -30,6 +30,7 @@ module.exports = {
         sidebar: {
             '/blog/': [
                 '',
+                'vue进阶',
                 'git',
                 'webpack'
             ],
