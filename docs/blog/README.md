@@ -1416,9 +1416,9 @@ console.timeEnd('标准冒泡排序运行时间')
 function bubbleSort2(arr){
     let length = arr.length;
     for(let i=0;i<length-2;i++){
-        for(let j=0;j<length-1-i;j++){	//内层优化
-            if(arr[i]>arr[j]){
-                [arr[i],arr[j]] = [arr[j],arr[i]]
+        for(let j=0;j<=length-1-i;j++){	//内层优化
+            if(arr[j]>arr[j+1]){
+                [arr[j+1],arr[j]] = [arr[j],arr[j+1]]
             }
         }
     }
