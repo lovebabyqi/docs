@@ -1394,12 +1394,12 @@ let arr10 = arr1.slice(0);
 **普通版:最简单(双层循环,比较,交换位置)**
 
 ```javascript
-function bubbleSort1(arr){
-    let length = arr.length;
-    for(let i=0;i<length;i++){
-        for(let j=0;j<length;j++){
-            if(arr[i]>arr[j]){	//这是从大到小排序
-                [arr[i],arr[j]] = [arr[j],arr[i]]
+function bubbleSort1(arr) {
+    let len = arr.length;
+    for (let i = 0; i < len; i++) {
+        for (let j = 0; j < len; j++) {
+            if (arr[j] > arr[j+1]) {
+                [arr[j+1], arr[j]] = [arr[j], arr[j+1]]
             }
         }
     }
@@ -1412,11 +1412,15 @@ console.timeEnd('标准冒泡排序运行时间')
 
 普通优化版:**(这版冒泡最快)**
 
+冒泡第一版优化，剩一个不用排，排过的不用再比。
+
+最后一个数`arr[length]`是和前一个数`arr[length-1]`比较的，最后一个数无需再次排序。内循环将`arr[j]`和`arr[j+1]`相邻两数比较，大的往右移动交换位置，第一圈外循环结束，已经找出`arr`中最大的数，放到`arr[length]`。所以内循环条件`-i`**表示排过的不再比**。
+
 ```javascript
-function bubbleSort2(arr){
-    let length = arr.length;
-    for(let i=0;i<length-2;i++){
-        for(let j=0;j<=length-1-i;j++){	//内层优化
+function bubbleSort2(arr) {
+    let len = arr.length;
+    for(let i=0;i<len-1;i++){
+        for(let j=0;j<len-1-i;j++){
             if(arr[j]>arr[j+1]){
                 [arr[j+1],arr[j]] = [arr[j],arr[j+1]]
             }
