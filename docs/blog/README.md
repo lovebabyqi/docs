@@ -1375,23 +1375,46 @@ function createArray(length){
     }
     return _arr;
 }
-let arr1 = createArray(20000);
-let arr2 = arr1.slice(0);
-let arr3 = arr1.slice(0);
-let arr4 = arr1.slice(0);
-let arr5 = arr1.slice(0);
-let arr6 = arr1.slice(0);
-let arr7 = arr1.slice(0);
-let arr8 = arr1.slice(0);
-let arr9 = arr1.slice(0);
-let arr10 = arr1.slice(0);
+let arr = createArray(20000);
+let arr1 = arr.slice(0);
+let arr2 = arr.slice(0);
+let arr3 = arr.slice(0);
+let arr4 = arr.slice(0);
+let arr5 = arr.slice(0);
+let arr6 = arr.slice(0);
+let arr7 = arr.slice(0);
+let arr8 = arr.slice(0);
+let arr9 = arr.slice(0);
+let arr10 = arr.slice(0);
 ```
+
+### 交换值
+
+1.解构交换
+
+```javascript
+[arr[j + 1], arr[j]] = [arr[j], arr[j + 1]]
+```
+
+2.中间变量交换
+
+```javascript
+let temp = arr[j];
+arr[j] = arr[j + 1];
+arr[j + 1] = temp;
+```
+
+**实测效率：**
+
+**冒泡排序用中间变量的方法交换值效率更高，2W长度的数组冒泡排序，交换值方法快100ms~200ms左右。**
+
+**选择排序使用解构交换效率更高**
 
 ### 一.冒泡排序
 
 冒泡排序算法，它是最慢的排序算法之一，但也是一种最容易实现的排序算法。
 
-**普通版:最简单(双层循环,比较,交换位置)**
+**普通版：最简单(双层循环，比较，交换位置)**
 
 ```javascript
 function bubbleSort1(arr) {
@@ -1399,18 +1422,21 @@ function bubbleSort1(arr) {
     for (let i = 0; i < len; i++) {
         for (let j = 0; j < len; j++) {
             if (arr[j] > arr[j+1]) {
-                [arr[j+1], arr[j]] = [arr[j], arr[j+1]]
+                let temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
             }
         }
     }
     return arr;
 }
 console.time('标准冒泡排序运行时间')
-bubbleSort1(arr1);
+let _arr1 = bubbleSort1(arr1);
 console.timeEnd('标准冒泡排序运行时间')
+console.log(_arr1)
 ```
 
-普通优化版:**(这版冒泡最快)**
+普通优化版：**(这版冒泡最快)**
 
 冒泡第一版优化，剩一个不用排，排过的不用再比。
 
@@ -1422,21 +1448,52 @@ function bubbleSort2(arr) {
     for(let i=0;i<len-1;i++){
         for(let j=0;j<len-1-i;j++){
             if(arr[j]>arr[j+1]){
-                [arr[j+1],arr[j]] = [arr[j],arr[j+1]]
+                let temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
             }
         }
     }
     return arr;
 }
 console.time('标准优化版冒泡排序运行时间')
-bubbleSort2(arr2);
+let _arr2 = bubbleSort2(arr2);
 console.timeEnd('标准优化版冒泡排序运行时间')
+console.log(_arr2);
 ```
 
-进化版:**最符合冒泡思路**
+进化版1：单层for循环，一轮for循环结束，重置循环变量至起点，模拟双层循环，**这版较快**（当然不是绝对的快，数据量大时较其他冒泡快）。
 
 ```javascript
-function bubbleSort3(arr){
+function bubbleSort3(arr = []) {
+    let length = arr.length - 1;
+    // 单层for循环
+    for (let j = 0; j < length; j++) {
+        if (arr[j] > arr[j + 1]) {
+            let temp = arr[j];
+            arr[j] = arr[j + 1];
+            arr[j + 1] = temp;
+        }
+        // 在循环到最大值时候重置j(j=-1到上面j++重置为0)这样可以省了外层for循环
+        if (j == length - 1) {
+        	j = -1;
+        	length--;//每一轮完成后，目标冒泡到了length位，排好的不再比。
+        }
+    }
+    return arr;
+}
+console.time('单层循环冒泡耗时')
+let _arr3 = bubbleSort3(arr3);
+console.timeEnd('单层循环冒泡耗时')
+console.log(_arr3)
+```
+
+
+
+进化版2：**最符合冒泡思路**
+
+```javascript
+function bubbleSort4(arr){
     let numElements = arr.length;
     let isDone = false;
     let isSort = 0;
@@ -1444,7 +1501,9 @@ function bubbleSort3(arr){
         isDone = false;
         for(let i=0;i<numElements-1-isSort;i++){
             if(arr[i]>arr[i+1]){
-                [arr[i],arr[i+1]] = [arr[i+1],arr[i]]
+                let temp = arr[i];
+                arr[i] = arr[i + 1];
+                arr[i + 1] = temp;
                 isDone = true;
             }
         }
@@ -1453,8 +1512,9 @@ function bubbleSort3(arr){
     return arr;
 }
 console.time('进化版冒泡排序运行时间')
-bubbleSort3(arr3);
+let _arr4 = bubbleSort4(arr4);
 console.timeEnd('进化版冒泡排序运行时间')
+console.log(_arr4);
 ```
 
 数组长度2W比较耗时
@@ -1489,7 +1549,7 @@ console.timeEnd('选择排序运行时间')
 
 ### 三.插入排序
 
-插入排序有两个循环：外循环将数组元素挨个移动内循环则对外循环中选中的元素及它后面的那个元素进行比较。如果外循环中选中的元素比内循环中选中的元素小，那么数组元素会向右移动，为内循环中的这个元素腾出位置。
+插入排序有两个循环：外循环将数组元素挨个移动，内循环则对外循环中选中的元素及它后面的那个元素进行比较。如果外循环中选中的元素比内循环中选中的元素小，那么数组元素会向右移动，为内循环中的这个元素腾出位置。
 
 ```javascript
 function insertionSort(arr){
@@ -1535,7 +1595,7 @@ function merge(left,right){
     let j = 0;
     const result = [];
     while(i<left.length&&j<right.length){
-        result.push((left[i]<right[j])?left[i++]:right[i++];
+        result.push((left[i]<right[j])?left[i++]:right[i++]);
     }
     return result.concat(i<left.length?left.slice(i):right.slice(j));
 }
@@ -1617,7 +1677,7 @@ quickSort2(arr8 );
 console.timeEnd('快速升级版排序运行时间')
 ```
 
-**200W长度**
+**2W长度**
 
 <img src='/docs/images/快速排序耗时.png' alt='快排轻易别用'>
 
