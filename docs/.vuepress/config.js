@@ -14,6 +14,7 @@ module.exports = {
     themeConfig: {
         logo: '/images/7.png',
         lastUpdated: 'Last Updated',//最后更新时间
+        displayAllHeaders:true,
         nav: [  //头部导航
             {text: '技术博客', link: '/blog/'},
             {text:'Js',link:'/JavaScript/'},
@@ -30,6 +31,7 @@ module.exports = {
         sidebar: {
             '/blog/': [
                 '',
+                'V8及javaScript进阶',
                 'vue进阶',
                 'git',
                 'webpack'
