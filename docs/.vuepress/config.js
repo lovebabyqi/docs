@@ -18,6 +18,7 @@ module.exports = {
         nav: [  //头部导航
             {text: '技术博客', link: '/blog/'},
             {text:'Js',link:'/JavaScript/'},
+            {text:'jQuery',link:'/jQuery/'},
             {text: 'html+css', link: '/css/'},
             {text: 'Vue', link: '/Vue/'},
             {text: 'React', link: '/React/'},
@@ -48,6 +49,9 @@ module.exports = {
                 'js正则表达式',
                 'js综合',
 
+            ],
+            '/jQuery/':[
+                ''
             ],
             '/css/': [
                 'css选择器',
