@@ -124,6 +124,8 @@ li:nth-child(odd)/*选中ul下的第奇数个li元素*/
 li:nth-child(even)/*选中ul下的第偶数个li元素*/
 
 li:nth-child(3n+1)/*选中ul下的第（3n+1）个li元素*/
+
+li:nth-child(-n+3)/*选中ul下的前三个li元素*/
 ```
 
 ### :nth-last-child(n)

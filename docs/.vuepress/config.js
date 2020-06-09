@@ -2,6 +2,8 @@ module.exports = {
     title: '十月个人技术博客',
     base: '/docs/',
     head: [
+        ['script',{src:"https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"}],
+        ['script',{src:'/utils/utils.js'}],
         ['link', {rel: 'icon', href: '/images/7.png'}],
         ['meta',{name:'viewport',content:'width=device-width,initial-scale=1,user-scalable=no'}],
         ['meta',{name:'apple-mobile-web-app-capable',content:'yes'}],
