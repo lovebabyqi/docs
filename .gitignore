@@ -1,11 +1,11 @@
 .DS_Store
 node_modules
-# local env files
 deploy.sh
 package.json
 yarn.lock
 docs/.vuepress
 docs/README.md
+# local env files
 .env.local
 .env.*.local
 
