@@ -1,4 +1,4 @@
-# 1. 初识JavaScript
+# 初识JavaScript
 
 一个完整的JavaScript 实现应该由下列三个不同的部分组成 。
 

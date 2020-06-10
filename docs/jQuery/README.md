@@ -36,7 +36,7 @@ window.onload = function(){
 
 jQuery对象全是伪数组(有0~length-1的属性,有length属性)
 
-> jquery dom对象 转成 原生 dom对象  通过`[]`
+> jquery dom对象 转成 原生 dom对象  通过`[]`   , `get()`
 >
 > 原生 dom对象 转成 jquery dom对象  通过`$`
 >
@@ -534,16 +534,22 @@ $("input[type='checkbox']").parent().is("form")//true
 
 ## 13. jQuery DOM的操作 
 
+创建一个dom节点
+
+```javascript
+var $li = $('<li>新增的li</li>')
+```
+
 ### 13.1 内部插入 
 
 ```javascript
-append(标签)
+append(dom节点)
 $('#box').append('<img>');//向每个匹配的元素内部追加内容。
 
 appendTo
 $('<img>').appendTo('#box');//把所有匹配的元素追加到另一个指定的元素元素集合中。
 
-prepend(标签)
+prepend(dom节点)
 $('#box').prepend('<img>');//向每个匹配的元素内部前置内容。
 
 prependTo
@@ -915,9 +921,8 @@ mousedown([[data],fn])//鼠标按下
 
 mousemove([[data],fn])//鼠标移动,持续触发
 
-
-
 mouseup([[data],fn])
+
 resize([[data],fn])//当调整浏览器窗口的大小时，发生 resize 事件。
 $(window).resize(function() {
     $('span').text(x+=1);
@@ -928,6 +933,7 @@ $(window).scroll( function() { /* ...do something... */ } );//当页面滚动条
 $("div").scroll(function() {
     $("span").text(x+=1);
 });//对元素滚动的次数进行计数：
+
 select([[data],fn])
 submit([[data],fn])//提交
 unload([[data],fn])1.8-
@@ -973,7 +979,7 @@ $("input").keyup(function(){
 
 ### 15.1 隐藏显示动画
 
-`hide()，show()`可传入time ms控制速度，动画执行结束可执行回调函数，改变`width,height,padding,margin,opacity`，
+`hide()，show()`可传入time ms控制速度，改变`width,height,padding,margin,opacity`，动画执行结束可执行回调函数。
 
 [hide文档地址](https://jquery.cuishifeng.cn/hide.html)
 
@@ -1063,18 +1069,110 @@ $("p").slideUp("fast",function(){
 
 ### 15.3 自定义动画
 
+#### `animate()`
+
 ```javascript
 animate( {属性1：值1,属性2：值2} ，time，fn)
+//可在time后加一个参数,easing  值有linear匀速 swing缓动
+```
 
-stop()//让动画暂停
+#### `delay()`
 
-finish()//让动画结束，只在动画过程生效
-
+```javascript
 delay()//让动画延迟执行
+$('.one').animate({width:'300px'},1000).delay(2000).animate({height:'200px'},500)
+//让one执行动画1000ms宽度变为300,动画结束2000ms延迟执行height动画
+```
+
+#### `stop( )`
+
+```javascript
+stop()//立即停止当前动画, 继续执行后续动画
+stop(false)
+stop(false , false)
+
+stop(true)//立即停止当前和后续所有动画
+stop(true , false)
+
+stop(false , true)//立即完成当前动画, 继续执行后续动画
+
+stop(true , true)//立即完成当前的, 并且停止后续所有的
+```
+
+stop( )案例
+
+<show-code>
+
+```html
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        button{
+            padding:5px 15px;
+            margin:5px;
+            line-height:1;
+        }
+        .one{
+            width: 100px;
+            height: 100px;
+            background-color: red;
+        }
+    </style>
+    <title>自定义动画</title>
+    <script src="jquery-3.1.1.js"></script>
+    <script>
+        $(function () {
+            $('button').eq(0).click(function(){
+                $('.one').animate({
+                    width:'500px'
+                },2000).animate({
+                    height:'200px'
+                },1000).animate({
+                    width:'toggle'
+                })
+            })
+            $('button').eq(1).click(function () {
+                // 立即停止当前动画, 继续执行后续的动画
+                // $("div").stop();
+                // $("div").stop(false);
+                // $("div").stop(false, false);
+
+                // 立即停止当前和后续所有的动画
+                // $("div").stop(true);
+                // $("div").stop(true, false);
+
+                // 立即完成当前的, 继续执行后续动画
+                // $("div").stop(false, true);
+
+                // 立即完成当前的, 并且停止后续所有的
+                $("div").stop(true, true);
+            })
+        })
+    </script>
+</head>
+<body>
+    <button type="button">开始</button>
+    <button type="button">stop</button>
+<div class="one">one</div>
+</body>
+</html>
+```
+
+</show-code>
+
+#### 其他方法
+
+```javascript
+finish()//让动画结束，只在动画过程生效
 
 jQuery.fx.interval//动画的帧数
 
-jQuery.fx.off//是否关闭页面中的所有动画
+jQuery.fx.off//是否关闭页面中的所有动画, 传入 true 关闭动画
 ```
 
 示例：img从`width:300`运动到`width:100`，动画时长3000ms，点击控制状态
@@ -1147,11 +1245,27 @@ jQuery.fx.off//是否关闭页面中的所有动画
 
 ### 15.4 动画队列
 
-​	同一个元素的所有动画会组成一个动画队列，该队列中的动画会依次执行。
+同一个元素的所有动画会组成一个动画队列，该队列中的动画会依次执行。依次执行（队列中同一个动画有很多次）就会产生bug，当我们快速的触发动画，每次触发都往队列添加了动画，之前的动画还没有执行结束，新的动画已经添加进去，高频率添加动画，就会造成动画不受控制，自嗨现象，影响用户体验。
+
+解决方案：**每次执行动画之前，先把上一次动画结束，在推送动画进入队列，让队列始终保持简单动画**。
+
+```javascript
+$('.nav>li').hover(function (){
+    var $second = $(this).children('.second');
+    $second.stop();//每次触发新动画,先结束上一次动画,让队列始终只有一个动画
+    $second.slideDown(500);
+},function () {
+    var $second = $(this).children('.second');
+    $second.stop();
+    $second.slideUp(500);
+}）
+```
+
+
 
 ### 15.5 jQuery动画案例
 
-#### 手风琴案例
+#### 手风琴菜单案例
 
 <img src='/docs/jq/手风琴.png' alt='手风琴.png'>
 
@@ -1628,7 +1742,7 @@ jQuery.fx.off//是否关闭页面中的所有动画
 
 </show-code>
 
-消息滚动案例01，从上往下滚
+#### 消息滚动案例01，从上往下滚
 
 <img src='/docs/jq/消息滚动案例01.png' alt='消息滚动案例01.png'>
 
@@ -1712,7 +1826,7 @@ jQuery.fx.off//是否关闭页面中的所有动画
 
 </show-code>
 
-消息滚动案例02，从上往下滚
+#### 消息滚动案例02，从上往下滚
 
 <img src='/docs/jq/消息滚动案例02.png' alt='消息滚动案例02.png'>
 
@@ -1799,6 +1913,206 @@ jQuery.fx.off//是否关闭页面中的所有动画
 ```
 
 </show-code>
+
+#### 对联广告
+
+浏览器滚动条至一定位置，`show()`广告
+
+<show-code>
+
+```html
+<!doctype html>
+<html lang='zh'>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        html,body{
+            width: 100vw;
+            height:300vh;
+        }
+        .left{
+            position:fixed;
+            top:50%;
+            transform:translateY(-50%);
+            left:0;
+        }
+        .right{
+            position:fixed;
+            top:50%;
+            transform:translateY(-50%);
+            right:0;
+        }
+        img{
+            display:none;
+        }
+    </style>
+    <script src="jquery-3.1.1.js"></script>
+    <script>
+        $(function () {
+            $(window).scroll(function(){
+                let top = $('html,body').scrollTop();
+                if(top>300){
+                    $('img').show(500)
+                }else{
+                    $('img').hide(500)
+                }
+            })
+        })
+    </script>
+</head>
+<body>
+<img src="../images/left_ad.png" alt="" class="left">
+<img src="../images/right_ad.png" alt="" class="right">
+</body>
+</html>
+```
+
+</show-code>
+
+#### 右下角弹窗广告
+
+右下角`fixed`定位，滑动出现，淡出，淡入
+
+<show-code>
+
+```html
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .ad{
+            position:fixed;
+            bottom:0;
+            right:0;
+            display:none;
+        }
+        .ad>span{
+            position:absolute;
+            top:0;
+            right:0;
+            width: 30px;
+            height: 30px;
+        }
+    </style>
+    <title>弹窗广告</title>
+    <script src="jquery-3.1.1.js"></script>
+    <script>
+        $(function () {
+            $('.ad>span').click(function(){
+                $('.ad').remove()
+            });
+            $('.ad').slideDown(1000).fadeOut(1000).fadeIn(1000);
+        })
+    </script>
+</head>
+<body>
+    <div class="ad">
+        <span></span>
+        <img src="../images/ad-pic.png" alt="">
+    </div>
+</body>
+</html>
+```
+
+<show-code>
+
+#### 无限循环滚动，hover蒙板
+
+<show-code>
+
+```html
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>无限循环滚动</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .container{
+            width: 600px;
+            height:152px;
+            margin: 50px auto;
+            overflow: hidden;
+        }
+        ul{
+            list-style:none;
+            width: 1800px;
+            height:152px;
+            background-color: #333;
+        }
+        ul>li{
+            float:left;
+        }
+        img{
+            width: 300px;
+            height:152px;
+        }
+    </style>
+    <script src="jquery-3.1.1.js"></script>
+    <script>
+        $(function(){
+            var offset = 0;//向左移动的偏移量
+            var timer;//定时器
+            function autoPlay(){
+                timer = setInterval(function(){
+                    offset -= 10;
+                    if(offset<=-1200){
+                        offset = 0;
+                    }
+                    $('ul').css('marginLeft',offset)
+                },50)
+            }
+            autoPlay();
+            $('li').hover(function(){
+                //停止滚动
+                clearInterval(timer);
+                //给非选中添加蒙板
+                $(this).siblings().fadeTo(100,0.5);
+                //去除当前选中的蒙板
+                $(this).fadeTo(100,1)
+            },function () {
+                autoPlay();
+                $('li').fadeTo(100,1)
+            })
+        })
+    </script>
+</head>
+<body>
+<div class="container">
+    <ul>
+        <li><img src="../images/a.jpg" alt=""></li>
+        <li><img src="../images/b.jpg" alt=""></li>
+        <li><img src="../images/c.jpg" alt=""></li>
+        <li><img src="../images/d.jpg" alt=""></li>
+        <li><img src="../images/a.jpg" alt=""></li>
+        <li><img src="../images/b.jpg" alt=""></li>
+    </ul>
+</div>
+</body>
+</html>
+```
+
+</show-code>
+
+
 
 ## 16. ajax
 
@@ -1891,25 +2205,19 @@ $(document).ready(function(){
     <script src="./jquery-3.4.1.js"></script>
     <script>
         $(document).ready(function(){
-
             $('#box').mousedown(function(e){
                 var left = e.clientX-$(this).offset().left
                 var top = e.clientY-$(this).offset().top
-
                 $(document).mousemove(function (e) {
                     $('#box').offset({
                         left:e.clientX-left,
                         top:e.clientY-top
                     })
-
                 }).mouseup(function(){
                     $(this).off('mousemove')
                     $(this).off('mouseup')
                 })
-
             })
-
-
         })
     </script>
 </body>
