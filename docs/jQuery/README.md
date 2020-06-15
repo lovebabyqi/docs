@@ -144,6 +144,42 @@ $(':button');//button  type='button'
 
 ## 4. 筛选dom操作
 
+### 破坏性操作概念
+
+破坏性操作是当一个`jQueryDOM`使用一个方法之后造成此对象的结构变化。**链式编程被中断**。就是不能一直再往后点了，因为当前对象的传递被破坏了，调用`end()`方法可以解决（可返回链被破坏前的对象）。 `nextAll(),preAll(),sibilings()`这些方法都是容易产生破坏性的。
+
+举个例子：
+
+```javascript
+var obj = $("body").find("p");
+```
+
+在 body 没有被使用 find 之前，对象 obj 包括 body 和 body 之内的所有元素。但 body 在被使用 find 之后，对象 obj 只包括 p 元素，原来的其它元素已不复存在，也就是说 原来的对象 obj 的结构被破坏，或者说被修改。
+
+实例：
+
+```javascript
+$("#blog").find("p.title").css({fontWeight: "bold"});
+```
+
+现在上面这行代码运行后剩下的是全部的 p，如果要继续对 `$("#blog") 对象进行修改，例如设置 $("#blog")` 的高度为200。
+
+```javascript
+$("#blog").find("p.title").css({fontWeight: "bold"}).css({height: 200}); // 错误，这样写会修改 p 的高度
+
+$("#blog").find("p.title").css({fontWeight: "bold"}).end().css({height: 200}); // 正确
+```
+
+**在破坏性操作之后可以使用 `end()` 来还原对象。**
+
+> **在一段代码声明后使用分号结束（;），`jQuery`会自动还原对象，破坏性操作只是在一段连贯的声明中起作用。**
+
+```javascript
+$("#blog").find("p.title").css({fontWeight: "bold"});
+
+// jQuery 自动 end()
+```
+
 ### 4.1 过滤操作       破坏性操作
 
 ```javascript
@@ -512,8 +548,6 @@ btn.onclick = function () {
 }
 ```
 
-
-
 ### 12.2 其他方法
 
 ####  index()
@@ -599,6 +633,8 @@ $('#box').empty()//清空box里面的所有节点。
 
 ```javascript
 $('#box').clone();//克隆box节点，包括内部所有的子节点。
+//不传参为深复制, 深复制同时复制了事件
+//传一个false表示浅复制	, 浅复制只复制元素, 不会复制元素事件
 ```
 
 ### 13.6 包裹
