@@ -1012,3 +1012,12 @@ Component({
 | bubbles      | Boolean | 否       | false  | 事件是否冒泡                                                 |
 | composed     | Boolean | 否       | false  | 事件是否可以穿越组件边界，为false时，事件将只能在引用组件的节点树上触发，不进入其他任何组件内部 |
 | capturePhase | Boolean | 否       | false  | 事件是否拥有捕获阶段                                         |
+
+## 1.22 小程序动态类名绑定
+
+```html
+<view class="{{'type' + item.type}} mc-bg"></view>
+/*双括号内可用拼接 , 多个类名在双括号外空格隔开, item是wx:for得到的项, 结果如下*/
+<view class="typeA mc-bg"></view>
+```
+
