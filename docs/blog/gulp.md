@@ -1,5 +1,11 @@
 # gulp构建项目
 
+全局安装`gulp-cli`
+
+```nginx
+npm install gulp-cli -g
+```
+
 ## gulp3
 
 安装gulp, 3和4版本配置差异较大
@@ -254,4 +260,270 @@ gulp.task('server',['default'],function(){
 
 ## gulp4
 
-gulp4 较 gulp3配置很大差异。
+`gulp4` 较 `gulp3`配置差异。插件用法大致相同，`gulp4`不推荐使用`task`注册任务。
+
+### 1. 合并js
+
+安装依赖
+
+```javascript
+yarn add gulp-concat gulp-uglify gulp-rename -D
+```
+
+注册任务
+
+```javascript
+const {src,dest} = require('gulp');
+const concat = require('gulp-concat');
+const uglify = require('gulp-uglify');
+const rename = require('gulp-rename');
+
+const gulpJs = ()=>{
+    return src('src/js/**/*.js',{sourcemaps:true})
+        .pipe(concat('build.js'))//临时合并文件
+        .pipe(dest('dist/js/'))//指定输出目录,输出build.js
+        .pipe(uglify())//压缩js文件
+        .pipe(rename({suffix:'.min'}))//min后缀
+        .pipe(dest('dest/js/'))//输出build.min.js
+}
+exports.gulpJs = gulpJs;//gulp gulpJs指令调用
+```
+
+### 2. 编译less
+
+安装依赖
+
+```nginx
+yarn add gulp-less gulp-clean-css -D
+```
+
+注册任务
+
+```javascript
+const less = require('gulp-less');
+const cleanCss = require('gulp-clean-css');//下一步压缩css使用
+
+const gulpLess = ()=>{
+    return src('src/less/**/*.less')
+        .pipe(less())//编译less
+        .pipe(dest('src/css/'))////先输出到css目录下，此时还未压缩输出到dist
+}
+exports.gulpLess = gulpLess;
+```
+
+### 3. 打包css
+
+```javascript
+const gulpCss = ()=>{
+    return src('src/css/**/*.css')
+        .pipe(concat('build.css'))//合并 先压缩先合并都可以，js也是一样，先重命名都可以
+        .pipe(rename({suffix: '.min'}))//命名
+        .pipe(cleanCss({compatibility: 'ie8'}))//压缩, 提供兼容
+        .pipe(dest('dist/css/'))//输出至dist
+}
+exports.gulpCss = gulpCss;
+```
+
+### 4. 处理html(压缩)
+
+安装依赖
+
+```nginx
+yarn add gulp-htmlmin -D
+```
+
+注册任务
+
+```javascript
+const htmlMin = require('gulp-htmlmin');
+const gulpHtml = ()=>{
+    return src('src/index.html')
+        .pipe(htmlMin({collapseWhitespace: true}))//压缩html,去除空格
+        .pipe(dest('dist/'))
+        .pipe(rename('home'))
+}
+exports.gulpHtml = gulpHtml;
+```
+
+### 5. 默认任务
+
+`gulp4`中`series`会严格按顺序执行任务
+
+```javascript
+const {series} = require('gulp')
+exports.build = series(gulpJs, gulpLess, guleCss, gulpHtml);
+//gulp build调用
+```
+
+### 6. 半自动构建
+
+半自动是自动编译, 需要手动刷新页面
+
+安装依赖
+
+```nginx 
+yarn add gulp-livereload -D
+```
+
+在需要执行的任务里面加上
+
+```javascript
+.pipe(liveReload())
+```
+
+创建任务
+
+```javascript
+const liveReload = require('gulp-livereload');
+const {watch} = require('gulp');
+const reLoad = ()=>{
+    liveReload.listen();
+    watch('src/less/*.less',gulpLess)
+}
+exports.reLoad = reLoad;
+//gulp reLoad开始半自动构建, 代码自动编译, 需要手动刷新页面
+```
+
+### 7. 全自动构建
+
+安装依赖
+
+```nginx
+yarn add gulp-connect gulp-open -D
+```
+
+在需要执行的任务中加上
+
+```javascript
+.pipe(connect.reload())
+```
+
+创建任务
+
+```javascript
+const connect = require('gulp-connect');
+//注册监视任务
+const gulpWatch = ()=>{
+    watch(['src/less/**/*.less'],parallel(gulpLess));
+    watch(['src/css/*.css'],series(gulpCss));
+    watch(['src/js/*.js'],parallel(gulpJs))
+    watch(['src/index.html'],parallel(gulpHtml))
+}
+//全自动编译刷新
+const startServer = ()=>{
+    connect.server({
+        root:'dist/',
+        livereload:true,
+        port:5000
+    })
+    gulpWatch()
+}
+exports.dev = series(gulpLess,guleCss,gulpJs,gulpHtml,startServer)
+//初次编译并开启服务 gulp dev
+```
+
+### 8. package.json
+
+<show-code>
+
+```json
+{
+  "name": "gulp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-autoprefixer": "^7.0.1",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-connect": "^5.7.0",
+    "gulp-htmlmin": "^5.0.1",
+    "gulp-less": "^4.0.1",
+    "gulp-livereload": "^4.0.2",
+    "gulp-rename": "^2.0.0",
+    "gulp-uglify": "^3.0.2"
+  }
+}
+```
+
+</show-code>
+
+上代码
+
+<show-code>
+
+```javascript
+//commonJS规范
+const {src,dest,series,watch,parallel} = require('gulp');
+const concat = require('gulp-concat');
+const uglify = require('gulp-uglify');
+const rename = require('gulp-rename');
+const less = require('gulp-less');
+const cleanCss = require('gulp-clean-css');
+const htmlMin = require('gulp-htmlmin');
+const connect = require('gulp-connect');
+const gulpJs = ()=>{
+    return src('src/js/**/*.js',{sourcemaps:true})
+        .pipe(concat('build.js'))//临时合并文件
+        .pipe(dest('dist/js/'))//指定输出目录
+        .pipe(uglify())//压缩js文件
+        .pipe(rename({suffix:'.min'}))
+        .pipe(dest('dist/js/'))
+        .pipe(connect.reload())
+}
+exports.gulpJs = gulpJs;
+
+const gulpLess = ()=>{
+    return src('src/less/**/*.less')
+        .pipe(less())//编译less
+        .pipe(dest('src/css/'))////先输出到css目录下，此时还未压缩输出到dist
+        .pipe(connect.reload())
+}
+exports.gulpLess = gulpLess;
+
+//注册合并压缩css文件
+const gulpCss = ()=>{
+    return src('src/css/**/*.css')
+        .pipe(concat('build.css'))//合并 先压缩先合并都可以，js也是一样，先重命名都可以
+        .pipe(rename({suffix: '.min'}))//命名
+        .pipe(cleanCss({compatibility: 'ie8'}))//压缩, 提供兼容
+        .pipe(dest('dist/css/'))//输出至dist
+        .pipe(connect.reload())
+}
+exports.gulpCss = gulpCss;
+
+//注册压缩html的任务
+const gulpHtml = ()=>{
+    return src('src/index.html')
+        .pipe(htmlMin({collapseWhitespace: true}))//压缩html,去除空格
+        .pipe(dest('dist/'))
+        .pipe(rename('home'))
+        .pipe(connect.reload())
+}
+exports.gulpHtml = gulpHtml;
+
+//注册监视任务
+const gulpWatch = ()=>{
+    watch(['src/less/**/*.less'],parallel(gulpLess));
+    watch(['src/css/*.css'],series(gulpCss));
+    watch(['src/js/*.js'],parallel(gulpJs))
+    watch(['src/index.html'],parallel(gulpHtml))
+}
+// exports.gulpWatch = gulpWatch;
+
+//全自动编译刷新
+const startServer = ()=>{
+    connect.server({
+        root:'dist/',
+        livereload:true,
+        port:5000
+    })
+    gulpWatch()
+}
+// exports.startServer = startServer;
+exports.dev = series(gulpLess,gulpCss,gulpJs,gulpHtml,startServer)
+```
+
+</show-code>
