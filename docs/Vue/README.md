@@ -17,11 +17,12 @@
 - vue是不能感知数组对索引位的更改。
 - vue可以感知数组的变异方法 即可以改变原数组的。
 
-	 **push pop		末位添加，删除**
+**push pop		末位添加，删除**
+
 >
 > **unshift shift		首位添加，删除**
 >
-> **sort resverse		排序、倒序**
+> **sort reverse		排序、倒序**
 >
 > **splice			从某位开始删除或替换**			
 

@@ -2474,3 +2474,121 @@ console.log(binaryToStr("110001000010001 100111011101100")); //我们
 console.log(binaryToStr("1000000 100101 100100 101011")); //@%$+ 
 ```
 
+## 23. jsconfig.ison文件介绍
+
+项目中引用图片路径使用相对路径不方便。`jsconfig.json可以帮助我们配置绝对路径自动导入`
+
+在项目根目录下创建`jsconfig.json`文件，他是webstorm的一个配置文件，基于`typeScript`中的`tsconfig.json`文件演化而来。把他放到项目根目录下，vscode会把整个项目的文件夹当做一个完整的js工程，我们对工程进行配置可以让vscode提供更好的代码补全和提示功能。
+
+配置绝对路径导入
+
+```javascript
+{
+  "compilerOptions": {
+    "baseUrl": "src"
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/node_modules/*"
+  ]
+}
+
+```
+
+ 这样就能在项目中使用绝对路径导入模块及静态资源。
+
+## 24. hygen模板模板生成器配置
+
+安装依赖，安装到全局
+
+```nginx
+npm i -g hygen
+```
+
+初始化`hygen`，会在项目根目录下创建一个`_templates`文件夹
+
+```nginx
+hygen init self
+```
+
+创建`component`
+
+```nginx
+hygen new generator component
+```
+
+删除`_templates/component/new/`下的文件，这里的文件就是配置的模板文件。
+
+* 写法：`to`是输出文件的地址。我们以UI组件库为例
+
+新建三个模板文件
+
+`index.ejs.t`
+
+```javascript
+---
+to: src/components/<%= name %>/index.js
+---
+
+import React from 'react';
+import PropTypes from 'prop-types';
+import Styled<%= name %> from './style'
+
+function <%= name %> ({children, ...rest}) {
+    return (
+        <Styled<%= name %> {...rest}>
+           {children}
+        </Styled<%= name %>>
+    )
+}
+
+<%= name %>.propTypes = {
+    children:PropTypes.any
+};
+
+export default <%= name %>;
+```
+
+`stories.ejs.t`
+
+```javascript
+---
+to: src/components/<%= name %>/<%= h.changeCase.lcFirst(name) %>.stories.js
+---
+
+import React from "react";
+import <%= name %> from ".";
+
+export default {
+    title: "<%= name %>",
+    component: <%= name %>
+}
+
+export const Default = () => {
+    return <<%= name %>>默认</<%= name %>>
+};
+```
+
+` style.ejs.t`
+
+```javascript
+---
+to: src/components/<%= name %>/style.js
+---
+
+import styled from 'styled-components';
+
+const Styled<%= name %> = styled.div``;
+
+export default Styled<%= name %>;
+```
+
+指令，使用指令就能根据模板、组件名快捷创建Icon组件
+
+```nginx
+hygen new component Icon
+```
+
