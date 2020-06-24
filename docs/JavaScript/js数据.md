@@ -92,7 +92,7 @@ console.log(Object.prototype.toString.call(function(){})) //[object Function]
 如果用isNaN函数来判断其他JS的数据，则会
 
 - 先隐式转成数字
-- 再把隐式转换好德1数字放到isNaN函数中
+- 再把隐式转换好的数字放到isNaN函数中
 
 ```javascript
 isNaN(true) -->  isNaN(1)   -->false
@@ -197,7 +197,7 @@ Number(false) --> 0
 Number(null)  ->  0
 ```
 
-**`undefined`**类型使用Number函数转换成数字类型
+**`undefined`类型**使用Number函数转换成数字类型
 
 ```javascript
 Number(undefined)  ->  NaN
@@ -206,9 +206,8 @@ Number(undefined)  ->  NaN
 **引用值：**
 引用值使用`Number`函数转换成数字类型有两步
 
-- 1.先把引用值隐式转换成字符串。
-
-- 2.再把隐式转换好的字符串放到`Number`中。
+1. 先把引用值隐式转换成字符串。
+2. 再把隐式转换好的字符串放到`Number`中。
 
 普通对象使用`Number`函数转换成数字类型
 
@@ -224,9 +223,9 @@ Number(function(){}) --> Number('function(){}')  --> NaN
 
 > **它会忽略字符串前面的空格，直至找到第一个非空格字符如果第一个字符是数字字符，`parseInt()`会继续解析第二个字符，直到解析完所有后续字符或者遇到了一个非数字字符。**
 >
-> **如果第一个字符不是数字字符或者负号，`parseInt()`就会返回`NaN`。**
+> **如果第一个字符不是数字字符或者正负号，`parseInt()`就会返回`NaN`。**
 >
-> **如果待解析的值是小数或是字符串打头的是小数的话, 那么`parseInt()`的结果只会截取整数部分, 无论小数部分是多少。**
+> **如果待解析的值是小数或是字符串开头的部分是小数的话, 那么`parseInt()`的结果只会截取整数部分，无论小数部分是多少。**
 
 #### 转换数字类型之parseFloat()
 
@@ -468,7 +467,7 @@ name.lastIndexOf('m',7) //5 第二个参数是从第几位开始找，说白了 
 
 **`String.prototype.search()`**
 
-`search()`返回字符串在指定字符串首次出现的位置，如果没找到就返回-1
+`search()`返回指定字符串在字符串中首次出现的位置，如果没找到就返回-1
 
 ```javascript
 'my name is amz'.search('amz')  // 11
@@ -610,7 +609,7 @@ amz.trim()  // 'my name is amz'
 
 **`String.prototype.replace()`**
 
-`replace()`方法返回一个由替换值 替换一些匹配到的新字符串，
+`replace()`方法返回一个由替换值 替换一些匹配到的新字符串，`reaplace()`第一个参数可以使用正则（使用正则形式可以实现全局匹配替换，`/reg/i`不区分大小写，`/reg/g`全局匹配正则），第二个参数可以使用函数形式返回一个值（函数形式可以实现不同位置替换不同的值）
 
 ```javascript
 const amz = 'my name is amz‘
@@ -636,7 +635,7 @@ console.log(arr3); //[1, 2, 3, 4, 5,'6']
 
 **`join()`**
 
-`join()` 方法用于把数组中的所有元素放入一个字符串。元素是通过指定的分隔符进行分隔的，默认使用','号分割，不改变原数组。
+`join()` 方法用于把数组中的所有元素放入一个字符串。元素是通过指定的分隔符进行分隔的，默认使用','号分隔，不改变原数组。
 
 ```JavaScript
 var arr = [2,3,4];
@@ -701,7 +700,7 @@ console.log(arr);  //[2,3,4,5]
 
 **`splice()`**
 
-`splice()` 方法可删除从` index` 处开始的零个或多个元素，并且用参数列表中声明的一个或多个值来替换那些被删除的元素。如果从 `arrayObject` 中删除了元素，则返回的是含有被删除的元素的数组。splice() 方法会直接对数组进行修改。
+`splice(startIndex,delCount,replaceVal)` 方法可删除从 `startIndex` 处开始的零个或多个元素，并且用**参数列表中声明的一个或多个值来替换那些被删除的元素**。如果从 `arrayObject` 中删除了元素，则返回的是含有被删除的元素的数组。splice() 方法会直接对数组进行修改。
 
 ```JavaScript
 var a = [5,6,7,8];
@@ -822,7 +821,7 @@ items.forEach(function(item){
 
 `flat`
 
-`flat()` 方法会按照一个可指定的深度递归遍历数组，并将所有元素与遍历到的子数组中的元素合并为一个新数组返回。运用：数组降维，移除空值。
+`flat()` 方法会按照一个可指定的深度递归遍历数组，并将所有元素与遍历到的子数组中的元素合并为一个新数组返回。运用：数组降维。不确定数组深度时可传入`Infinity`得到完全降维的数组
 
 ```javascript
 var arr1 = [1, 2, [3, 4]];
@@ -1045,21 +1044,19 @@ bb 这个对象 将会拥有数组有的所有方法，因为是以数组的prot
 
 Object.defineProperties()方法直接在一个对象上定义新的属性或修改现有属性，并返回该对象
 
-
-
 ```javascript
-const obj = {a: 1, b: 2}
+const obj = {a: 1, b: 2};
 Object.defineProperties(obj, {
-    a: {value: ''hello, writable: false}, 
+    a: {value: 'hello', writable: false}, 
     c: {value: true, writable: true},
     d: {value: 'hello', writable: false}
 })
 // 上面value 是属性的值，writable属性是 是否可以修改属性值
 console.log(obj) // {a: 'hello', b: 2, c: true, d: 'hello'}
 obj.c = 3
-console.log(c) // 3
+console.log(obj.c) // 3
 obj.a = 4
-console.log(a) // 'hello'
+console.log(obj.a) // 'hello'
 ```
 
  
@@ -1079,11 +1076,11 @@ Object.defineProperty(obj, 'a', {
 console.log(obj) // {a: 'hello wrod'}
 ```
 
-- enumerbale是否在对象的枚举属性中 默认false
-- configurable 是否可修改或删除属性特性(属性特性就是这一堆值为false或则会true的东西)，默认false
-- wrtable 是否可以修改属性的值 默认为false
+- `enumerbale`是否在对象的枚举属性中，默认`false`
+- `configurable` 是否可修改或删除属性特性(属性特性就是这一堆值为false或则会true的东西)，默认`false`
+- `writable`是否可以修改属性的值，默认为`false`
 
-如果你在对象中未使用 Object.defineProperty(), Object.defineProperties()或Objecr.create()函数的情况下添加对象属性，则enumerbale，configurable，wrtable 默认都是true
+如果你在对象中未使用` Object.defineProperty()`，`Object.defineProperties()`或`Objecr.create()`函数的情况下添加对象属性，则`enumerbale，configurable，wrtable` 默认都是`true`
 
  
 
