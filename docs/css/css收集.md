@@ -53,4 +53,44 @@
 - minimum-scale：允许用户缩放到的最小比例。
 - user-scalable：用户是否可以手动缩放。
 
-### 
+### 4. 纯css修改滚动条样式
+
+只支持谷歌浏览器，IE只能修改颜色
+
+```javascript
+<div class='container'>ul>li{第$个li}*100</div>
+```
+
+谷歌
+
+```css
+ .container {
+    width: 500px;
+    margin: 50px auto;
+    border: 1px solid #ccc;
+    height: 600px;
+    overflow-y: scroll;
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, .3);
+}
+/*-webkit*/
+.container::-webkit-scrollbar {/*滚动条整体部分,width,height,background,border等*/
+    width: 10px;/*只需设置宽度, 高度是自适应的*/
+    background: hsla(0, 0%, 100%, 0.6);
+}
+.container::-webkit-scrollbar-track {/*外层轨道*/
+	border-radius: 0;
+}
+.container::-webkit-scrollbar-thumb {/*滚动条可以拖动的部分*/
+    border-radius: 0;
+    background-color: rgba(95, 95, 95, .4);
+    transition: all .2s;
+    border-radius: 5px;
+}
+.container::-webkit-scrollbar-thumb:hover {
+	background-color: rgba(95, 95, 95, .7);/*滚动条hover颜色*/
+}
+#scroll::-webkit-scrollbar-button{/*滚动条两端的按钮，可以用display:none让其不显示，也可以添加背景图片，颜色改变显示效果（位置2）*/
+    background:#74D334;
+}
+```
+
