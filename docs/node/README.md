@@ -784,3 +784,53 @@ app.use(cxt=>{
 })
 ```
 
+## 2.12 linux下快速删除
+
+当我们在`linux`系统中要删除数万或者数十万甚至数百万的文件时使用`rm -rf *`就不太好用，因为要等待很长一段时间。在这种情况之下我们可以使用`linux`系统命令`rsync`来巧妙的处理。`rsync`实际上用的是替换原理，处理数十万个文件也是秒删。 
+
+1.先新建一个空目录用于替换
+
+```nginx
+mkdir /data/blank 
+```
+
+2.用rsync快速替换实现清空文件夹(绝对路径)
+
+```nginx
+rsync --delete-before -d -a -H -v --progress --stats /data/blank/ /var/edatacache/
+# 或者
+rsync --delete-before -d /data/blank/ /var/edatacache/
+```
+
+这样edatacache就被清空了
+
+```nginx
+选项说明：
+–delete-before 接收者在传输之前进行删除操作
+–progress          在传输时显示传输过程
+-a                       归档模式，表示以递归方式传输文件，并保持所有文件属性
+-H                      保持硬连接的文件
+-v                       详细输出模式
+–stats                给出某些文件的传输状态
+-d                      transfer directories without recursing
+```
+
+3.也可以用来删除大文件
+
+> 假如我们在/root/下有一个几十G甚至上百G的文件data，现在我们要删除它
+
+创建一个空文件
+
+```nginx
+ touch /root/empty
+```
+
+用rsync清空/root/data文件
+
+```nginx
+ rsync --delete-before -d --progess --stats /root/empty /root/data
+```
+
+> 当SRC和DEST文件性质不一致时将会报错 
+> 当SRC和DEST性质都为文件【f】时，意思是清空文件内容而不是删除文件 
+> 当SRC和DEST性质都为目录【d】时，意思是删除该目录下的所有文件，使其变为空目录 
